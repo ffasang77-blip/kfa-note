@@ -242,11 +242,17 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 .colb b{flex:1 1 260px;font-size:16px;line-height:1.45}
 .colb .cg{font-weight:800;color:var(--red);white-space:nowrap}
 .colb:hover b{text-decoration:underline}
-.pkban{display:flex;align-items:center;justify-content:center;gap:14px 22px;flex-wrap:wrap;margin:14px 16px 0;padding:14px 16px;background:linear-gradient(135deg,#0d2a6b,#1e3a8a);border-radius:12px;color:#fff}
-.pkban .pkt{flex:0 1 260px;text-align:left}
-.pkban .pkt b{display:block;font-size:19px;color:#facc15;margin-bottom:4px}
-.pkban .pkt span{font-size:14px;line-height:1.6;opacity:.92}
-.pkban .pkg{flex:0 0 300px;max-width:100%}
+.minis{display:flex;gap:8px;flex-wrap:wrap;margin:10px 16px 0}
+.mini{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;border:1px solid #d6dbe8;background:#fff;color:#1e3a8a;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.mini:hover{border-color:#1e3a8a}
+.mini[aria-expanded="true"]{background:#1e3a8a;color:#fff;border-color:#1e3a8a}
+.mini .ar{font-size:10px;opacity:.7}
+.mpan{margin:8px 16px 0;padding:14px;border-radius:12px;background:#0d2a6b;color:#fff}
+.mpan[hidden]{display:none}
+.mpan .mh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-size:13.5px}
+.mpan .mh a{color:#facc15;font-weight:700;text-decoration:none;white-space:nowrap}
+.mpan .pkg{width:300px;max-width:100%;margin:0 auto}
+.mpan iframe{display:block;width:100%;height:78vh;min-height:560px;border:0;border-radius:10px;background:#0b0f1e}
 .mvb b{display:inline-block;margin-left:6px;background:#fff;color:var(--blue);border-radius:16px;padding:1px 12px}
 </style>
 <link rel="canonical" href="https://kfa-note.blogspot.com/">
@@ -254,6 +260,12 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <body>
 <a class="mvb" id="mvb" href="https://kfa-note.blogspot.com/" hidden>📢 태극전사 경기 노트가 구글 블로그로 옮겼습니다 · 경기 글·라인업·자유게시판을 한곳에서 <b>블로그로 가기 →</b></a>
 
+<div class="minis" role="group" aria-label="쉬어가기">
+<button class="mini" id="mb-pk" type="button" aria-expanded="false" aria-controls="mp-pk">⚽ 승부차기 게임 <span class="ar">▼</span></button>
+<button class="mini" id="mb-lt" type="button" aria-expanded="false" aria-controls="mp-lt">🎱 로또 번호 생성기 <span class="ar">▼</span></button>
+</div>
+<div class="mpan" id="mp-pk" hidden><div class="mh"><span>노란 원이 골키퍼가 없는 곳에 올 때 탭! 연속골에 도전하세요.</span></div><div class="pkg"><canvas id="pkb" width="300" height="250" style="width:100%;height:auto;display:block;border-radius:10px;cursor:pointer;touch-action:manipulation;box-shadow:0 2px 8px rgba(0,0,0,.25)"></canvas></div></div>
+<div class="mpan" id="mp-lt" hidden><div class="mh"><span>방송 추첨기처럼 번호를 뽑아요 · 재미로만 즐겨 주세요</span><a href="https://ffasang77-blip.github.io/kfa-note/lotto.html" target="_blank" rel="noopener">새 창으로 크게 ↗</a></div><iframe id="lt-if" title="로또 6/45 번호 생성기" loading="lazy"></iframe></div>
 <header class="mast band">
 <svg class="stripes" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true"><g stroke="#fff" stroke-width="10"><line x1="300" y1="0" x2="200" y2="200"/><line x1="330" y1="0" x2="230" y2="200"/><line x1="360" y1="0" x2="260" y2="200"/></g><circle cx="80" cy="170" r="70" fill="none" stroke="#fff" stroke-width="3"/></svg>
 <div class="wrap">
@@ -281,7 +293,6 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 </div>
 </header>
 <a class="colb" href="https://kfa-note.blogspot.com/2026/11/korea-japan-football-gap-analysis.html"><span class="ct">📝 칼럼</span><b>일본과 벌어진 격차, 선수인가 감독인가 — 좀처럼 일어서지 못하는 한국 축구 문제점 분석</b><span class="cg">읽어 보기 →</span></a>
-<div class="pkban" aria-label="태극전사 승부차기 미니게임"><div class="pkt"><b>⚽ 쉬어가기: 태극전사 승부차기</b><span>노란 원이 골키퍼가 없는 빈 곳에 올 때 탭! 연속골에 도전해 보세요. 골을 넣을수록 빨라집니다.</span></div><div class="pkg"><canvas id="pkb" width="300" height="250" style="width:100%;height:auto;display:block;border-radius:10px;cursor:pointer;touch-action:manipulation;box-shadow:0 2px 8px rgba(0,0,0,.25)"></canvas></div></div>
 
 <div class="shell">
 <nav class="side" id="side" aria-label="메뉴">
@@ -676,6 +687,16 @@ function loop(n){var dt=Math.min(.05,(n-last)/1000);last=n;t+=dt;
     if(msg==='골~!!'){st='aim';}else{if(streak>best){best=streak;try{localStorage.setItem('pkbBest',best)}catch(e){}}st='over';}}}
   draw();requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
+})();
+</script>
+<script>
+(function(){
+function tg(b,p,on){var B=document.getElementById(b),P=document.getElementById(p);if(!B||!P)return;
+B.addEventListener('click',function(){var o=B.getAttribute('aria-expanded')!=='true';
+['mb-pk','mb-lt'].forEach(function(x){var e=document.getElementById(x);if(e&&e!==B){e.setAttribute('aria-expanded','false');e.querySelector('.ar').textContent='▼';document.getElementById(e.getAttribute('aria-controls')).hidden=true}});
+B.setAttribute('aria-expanded',o?'true':'false');B.querySelector('.ar').textContent=o?'▲':'▼';P.hidden=!o;if(o&&on)on()})}
+tg('mb-pk','mp-pk');
+tg('mb-lt','mp-lt',function(){var f=document.getElementById('lt-if');if(f&&!f.getAttribute('src'))f.setAttribute('src','https://ffasang77-blip.github.io/kfa-note/lotto.html')});
 })();
 </script>
 </body>
