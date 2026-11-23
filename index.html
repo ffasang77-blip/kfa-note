@@ -206,6 +206,12 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 .ms b:first-child{text-align:right}.ms div{position:relative;height:8px;border-radius:4px;background:rgba(255,255,255,.3);overflow:hidden}.ms div i{position:absolute;left:0;top:0;bottom:0;background:#fff}
 .ms em{grid-column:1/-1;font-style:normal;text-align:center;font-size:11px;opacity:.85;margin-bottom:-3px}
 .mc .mn{font-size:11px;opacity:.85;margin-top:8px}
+.tbtns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn2{border:2px solid var(--red);background:#fff;color:var(--red);cursor:pointer;font:inherit;font-weight:700}
+.btn2[aria-expanded="true"]{background:var(--red);color:#fff}
+.tlp{margin-top:12px}.tlp .mc{max-width:none}
+.tlp .wait{padding:12px 14px;border-radius:10px;background:#fff5f5;border:1px solid #f1c4c8;font-size:14px;line-height:1.6;color:#333}
+.tlp .wait b{color:var(--red)}.tlp .wait a{color:var(--blue);font-weight:700}
 .mcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;align-items:start}
 .mcg .mc{margin:0;max-width:none}
 .mcw{scroll-margin-top:16px;border-radius:12px}.mcw:target{outline:3px solid #f2b705;outline-offset:4px}
@@ -213,7 +219,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 .lub:hover{background:#a51d2a}
 .mct{font-size:13px;font-weight:700;margin:0 0 4px;color:var(--ink)}
 .mct span{color:#c42532}
-.nw{display:inline-block;background:#c42532;color:#fff;font-size:10px;padding:1px 5px;border-radius:4px;vertical-align:middle;margin-left:4px}
+.newb{display:inline-block;background:#c42532;color:#fff;font-size:10px;padding:1px 5px;border-radius:4px;vertical-align:middle;margin-left:4px}
 </style>
 </head>
 <body>
@@ -237,7 +243,8 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <dt>현재</dt><dd>2전 전승(9득점 0실점) B조 1위 · 비기기만 해도 조 1위</dd>
 <dt>중계</dt><dd>국내 중계 미발표 · FIFA+ 확인 권장</dd>
 </dl>
-<a class="btn" href="https://www.fifa.com/en/tournaments/mens/u17worldcup/qatar-2026">FIFA에서 경기 보기</a>
+<div class="tbtns"><a class="btn" href="https://www.fifa.com/en/tournaments/mens/u17worldcup/qatar-2026">FIFA에서 경기 보기</a><button type="button" class="btn btn2" id="tlu" aria-expanded="false" aria-controls="tlp">⚽ 라인업</button></div>
+<div id="tlp" class="tlp" hidden></div>
 </div>
 <div class="stub"><div><b id="dd">D-2</b><span id="ddl">킥오프까지</span></div></div>
 </article>
@@ -247,7 +254,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <div class="shell">
 <nav class="side" id="side" aria-label="메뉴">
 <span class="lbl">경기 노트</span>
-<a href="#lineups">라인업·경기 기록 <b class="nw">NEW</b></a>
+<a href="#lineups">라인업·경기 기록 <b class="newb">NEW</b></a>
 <a href="#comps">대회별 일정·결과</a>
 <a href="#teams">연령별 대표팀</a>
 <a href="#years">연도별 기록</a>
@@ -261,7 +268,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 
 <main id="home">
 <section class="band" id="lineups"><div class="wrap">
-<h2>라인업 · 경기 기록 <b class="nw">NEW</b></h2>
+<h2>라인업 · 경기 기록 <b class="newb">NEW</b></h2>
 <p>경기별 선발 라인업과 후보 명단, 교체 시간, 득점, 경기 기록을 경기장 그림으로 정리했습니다. 공식 기록으로 확인된 경기부터 차례로 추가합니다. 흐린 선수는 교체로 나간 선수이고, 초록 글씨가 교체로 들어온 선수입니다.</p>
 <div class="mcg" id="mcgrid"></div>
 </div></section>
@@ -470,6 +477,10 @@ ${m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGo
 ${st?`<h6>경기 기록 (한국 · ${m.opp})</h6>${st}`:''}<div class="mn">▼ 교체 아웃 · ▲ 교체 투입 · ⚽ 득점${m.note?' · '+m.note:''}</div></div>`};
 const det=r=>{const k=r[0]+'|'+r[2],x=X[k]||{},mcH=mcard(k);if(!X[k]&&!mcH)return '';const row=(l,v)=>v?`<div><dt>${l}</dt><dd>${v}</dd></div>`:'';
 return `${mcH?`<a class="lub" href="#lu-${r[0]}">⚽ 라인업 보기</a>`:''}<details class="dx"><summary>경기 상세 · 라인업 · 상대팀 기록</summary>${mcH}<dl>${mcH?'':row('한국 포메이션',x.f)+row('한국 선발',x.xi)}${row('상대 포메이션',x.of)}${row('경기 흐름·전술',x.tac)}${row('상대팀 기록',x.o)}</dl></details>`};
+{const NEXT='2026-11-25|에콰도르',b=document.getElementById('tlu'),pn=document.getElementById('tlp');
+if(b&&pn){b.addEventListener('click',()=>{const open=pn.hidden;pn.hidden=!open;b.setAttribute('aria-expanded',open);
+if(open){pn.innerHTML=MC[NEXT]?mcard(NEXT):`<div class="wait"><b>선발 라인업은 경기 약 1시간 전에 발표됩니다.</b><br>발표되면 이 칸에 선발 11명과 후보 명단을 경기장 그림으로 올리고, 경기 중·후에는 교체와 득점, 경기 기록을 이어서 반영합니다.<br><a href="#lineups">지난 경기 라인업 보기 →</a></div>`}})}}
+
 {const g=document.getElementById('mcgrid');if(g){const keys=Object.keys(MC).sort().reverse();g.innerHTML=keys.map(k=>{const [d,o]=k.split('|');const r=(typeof res!=='undefined'?res:[]).find(x=>x[0]===d&&x[2]===o);const sc=r?` <span>${r[3]} ${r[4]==='W'?'승':r[4]==='D'?'무':'패'}</span>`:'';return `<div id="lu-${d}" class="mcw"><p class="mct">${d.replace(/-/g,'.')} · 대한민국 vs ${o}${sc}</p>${mcard(k)}</div>`}).join('')}}
 let csel='전체';
 const groups={'전체':()=>true,'진행·예정':c=>c.s!=='done','종료':c=>c.s==='done'};
