@@ -283,7 +283,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <p class="note"><a href="#comps">← 경기 노트로 돌아가기</a></p>
 <p>자유게시판과 경기 응원은 네이버 블로그에서 함께 나눕니다. 경기 전 안내 글과 관전평도 블로그에 올라갑니다.</p>
 <div class="hls">
-<a data-nb="guest" href="#" hidden>자유게시판 (네이버 블로그 방명록)</a>
+<a data-nb="guest" href="#" hidden>자유게시판 (네이버 블로그)</a>
 <a data-nb="home" href="#" hidden>경기별 응원 댓글 (네이버 블로그)</a>
 </div>
 <p class="note" id="nbnone">네이버 블로그 주소가 등록되면 이곳에 링크가 표시됩니다.</p>
@@ -296,7 +296,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 
 <script>
 {
-const SITE={naverBlog:""};
+const SITE={naverBlog:"https://blog.naver.com/ffasang"};
 const U={u17:"https://www.fifa.com/en/tournaments/mens/u17worldcup/qatar-2026",uga:"https://www.fifa.com/en/watch/ziS1zibYToQZABWiQHvNc",ncl:"https://www.fifa.com/en/tournaments/mens/u17worldcup/qatar-2026/articles/matchday-4-round-up-doha",cze:"https://www.fifa.com/en/watch/1iidGe97khg8lmdSRopdh4",czey:"https://www.youtube.com/watch?v=6k18EJY8zIc",wct:"https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/korea-republic/team-news",wch:"https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/highlights",w20:"https://www.dazn.com/en-DE/competition/Competition:dcgbs1vkp9y3y31li7s95i51f",mar:"https://www.plus.fifa.com/en/content/917ac9f1-9534-4364-8258-a0136d008f81",eng:"https://www.plus.fifa.com/en/content/a012d47b-4d12-471e-a1ea-28ab3e1e6496"};
 
 /* 대회 정보 */
@@ -468,7 +468,7 @@ document.getElementById('src').innerHTML=src.map(s=>`<li><a href="${s[1]}">${s[0
 
 /* 커뮤니티: 네이버 블로그 연결 (SITE.naverBlog에 블로그 주소를 넣으면 링크가 켜짐) */
 const nb=SITE.naverBlog;
-document.querySelectorAll('[data-nb]').forEach(el=>{if(nb){el.href=nb+(el.dataset.nb==='guest'?'/guestbook':'');el.hidden=false}else{el.hidden=true}});
+document.querySelectorAll('[data-nb]').forEach(el=>{if(nb){el.href=nb;el.hidden=false}else{el.hidden=true}});
 document.getElementById('nbnone').hidden=!!nb;
 }
 </script>
