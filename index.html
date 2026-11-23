@@ -225,6 +225,8 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 .mvw{background:#fff;border-radius:0 0 10px 10px;padding:14px;font-size:14px;line-height:1.7;color:#333}
 .mvw b{color:#c42532}
 .mc.rec .rr{font-size:28px;font-weight:900;text-align:center;margin:6px 0}
+.coach{margin-top:6px;font-size:12.5px;background:rgba(255,255,255,.15);border-radius:6px;padding:4px 8px;display:inline-block}.coach b{font-size:13.5px}
+.cdm{display:inline-block;width:8px;height:11px;border-radius:1px;margin-left:3px;vertical-align:-1px}.cdm.y{background:#ffd400}.cdm.r{background:#ff2b2b}
 .mcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;align-items:start}
 .mcg .mc{margin:0;max-width:none}
 .mcw{scroll-margin-top:16px;border-radius:12px}.mcw:target{outline:3px solid #f2b705;outline-offset:4px}
@@ -467,32 +469,32 @@ const play='<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height=
 
 /* 경기 카드 데이터: xi는 [골키퍼, 수비(왼→오), 미드필드…, 공격] 순서 */
 const MC={
-"2026-11-22|뉴칼레도니아":{t:"U-17 남자",f:"4-2-3-1",xi:["장준영","최재혁","최민준","강무성","성민수","박주호","한승민","백건","안선현","임지성","김지우"],
+"2026-11-22|뉴칼레도니아":{t:"U-17 남자",coach:"김현준",f:"4-2-3-1",xi:["장준영","최재혁","최민준","강무성","성민수","박주호","한승민","백건","안선현","임지성","김지우"],
  subs:[[17,"이인우","임지성"]],subsG:[[46,["최건민","태도윤","김정현"],["강무성","백건","최재혁"]]],
- goals:[["박주호","5"],["김지우","15"],["김지우","20"],["김지우","53"],["안선현",""],["한승민",""]],opp:"뉴칼레도니아",
+ goals:[["박주호","5","김지우"],["김지우","15","안선현"],["김지우","20"],["김지우","53","이인우"],["안선현",""],["한승민",""]],opp:"뉴칼레도니아",
  stats:[["점유율","75%","25%"],["슈팅","31","4"]],
  note:"선발·교체: 대한축구협회 발표 기사 기준 · 수비 좌우 배치는 참고용 · 후반 시작 교체 3명은 누가 누구와 바뀌었는지 미확인 · 62분 안선현 PK 실축"},
-"2026-11-19|우간다":{t:"U-17 남자",goals:[["김지호","8"],["상대 자책골","50"],["김지우","84"]],opp:"우간다",stats:[["슈팅","15","15"],["유효슈팅","7","5"],["파울","18","9"]],note:"4-2-3-1 · 공격진 남이안, 2선 백건·이인우·김지호, 중원 한승민·정하원 (수비·골키퍼 확인 중)"},
-"2026-11-13|사우디아라비아":{t:"남자 A",f:"4-4-2",xi:["김승규","조현택","김민재","이한범","설영우","황희찬","박진섭","황인범","이강인","손흥민","오현규"],
+"2026-11-19|우간다":{t:"U-17 남자",coach:"김현준",goals:[["김지호","8","이인우"],["상대 자책골","50"],["김지우","84","안선현"]],opp:"우간다",stats:[["슈팅","15","15"],["유효슈팅","7","5"],["파울","18","9"]],note:"4-2-3-1 · 공격진 남이안, 2선 백건·이인우·김지호, 중원 한승민·정하원 (수비·골키퍼 확인 중)"},
+"2026-11-13|사우디아라비아":{t:"남자 A",coach:"로베르트 모레노 (임시)",oppCoach:"요르요스 도니스",cards:[],cardsSrc:"ESPN 기록상 경고·퇴장 없음",f:"4-4-2",xi:["김승규","조현택","김민재","이한범","설영우","황희찬","박진섭","황인범","이강인","손흥민","오현규"],
  bench:["이명재","최준","이재성","김지수","오세훈","엄지성","박태준","손정범","송민규","이동경","정우영","김봉수","송범근","신민하","조현우"],
  subs:[[45,"이명재","조현택"],[66,"최준","설영우"],[66,"이재성","박진섭"],[66,"김지수","이한범"],[66,"오세훈","오현규"],[81,"엄지성","황희찬"]],
- goals:[["오현규","47"],["이재성","68"]],opp:"사우디",oppGoals:"알사하피 45+1' · 칸노 56' · 알암리 59'",
+ goals:[["오현규","47"],["이재성","68","황희찬"]],opp:"사우디",oppGoals:"알사하피 45+1' · 칸노 56' · 알암리 59'",
  stats:[["점유율","47%","53%"],["유효슈팅","6","5"],["코너킥","2","2"],["파울","14","11"]],
  note:"기록: ESPN 경기 기록 · 포메이션은 기록처에 따라 4-4-2 / 4-2-3-1로 다르게 표기"},
-"2026-06-12|체코":{t:"남자 A",f:"3-4-2-1",xi:["김승규","이한범","김민재","이기혁","이태석","황인범","백승호","설영우","이강인","이재성","손흥민"],goals:[["황인범",""],["오현규",""]],note:"후보·교체 시간은 확인되는 대로 추가 · 좌우 배치는 참고용"},
-"2026-04-01|오스트리아":{t:"남자 A",f:"3-4-3",xi:["김승규","김주성","김민재","이한범","이태석","김진규","백승호","설영우","이재성","손흥민","이강인"],note:"후보·교체 시간은 확인되는 대로 추가 · 좌우 배치는 참고용"}
+"2026-06-12|체코":{t:"남자 A",coach:"홍명보",f:"3-4-2-1",xi:["김승규","이한범","김민재","이기혁","이태석","황인범","백승호","설영우","이강인","이재성","손흥민"],goals:[["황인범",""],["오현규",""]],note:"후보·교체 시간은 확인되는 대로 추가 · 좌우 배치는 참고용"},
+"2026-04-01|오스트리아":{t:"남자 A",coach:"홍명보",f:"3-4-3",xi:["김승규","김주성","김민재","이한범","이태석","김진규","백승호","설영우","이재성","손흥민","이강인"],note:"후보·교체 시간은 확인되는 대로 추가 · 좌우 배치는 참고용"}
 };
 const mcard=(k)=>{const m=MC[k];if(!m||!m.xi)return '';
 const rows=[1,...m.f.split('-').map(Number)],sub=m.subs||[],gl=m.goals||[];
 const outM={},inBy={},used=new Set(sub.map(x=>x[1]));sub.forEach(([mn,i,o])=>{outM[o]=mn;inBy[o]=[i,mn]});(m.subsG||[]).forEach(([mn,ins,outs])=>{outs.forEach(o=>outM[o]=mn);ins.forEach(x=>used.add(x))});
-const gm=n=>gl.filter(g=>g[0]===n).map(g=>' ⚽'+(g[1]?g[1]+"'":'')).join('');
+const gm=n=>gl.filter(g=>g[0]===n).map(g=>' ⚽'+(g[1]?g[1]+"'":'')).join('')+(m.cards||[]).filter(c=>c[0]===n).map(c=>`<b class="cdm ${c[1]==='R'?'r':'y'}" title="${c[1]==='R'?'퇴장':'경고'} ${c[2]||''}"></b>`).join('');
 let h='',i=0;rows.forEach((n,r)=>{const y=86-r*(76/(rows.length-1));for(let k=0;k<n;k++){const x=100*(k+1)/(n+1),nm=m.xi[i++];
 const ib=inBy[nm];h+=`<div class="pl${i===1?' gk':''}${outM[nm]?' off':''}" style="left:${x}%;top:${y}%"><i></i>${nm}${gm(nm)}${outM[nm]?`<s>▼${outM[nm]}'</s>`:''}${ib?`<u>▲${ib[0]} ${ib[1]}'${gm(ib[0])}</u>`:''}</div>`}});
 const bench=(m.bench||[]).map(b=>`<span class="${used.has(b)?'u':''}">${b}</span>`).join('');
 const st=(m.stats||[]).map(([l,a,b])=>{const fa=parseFloat(a),fb=parseFloat(b),p=fa+fb?100*fa/(fa+fb):50;return `<div class="ms"><em>${l}</em><b>${a}</b><div><i style="width:${p}%"></i></div><b>${b}</b></div>`}).join('');
-return `<div class="mc"><div class="mh"><b>한국 선발 라인업</b><span class="fm">${m.f}</span></div><div class="pt">${h}</div>
+return `<div class="mc"><div class="mh"><b>한국 선발 라인업</b><span class="fm">${m.f}</span></div>${m.coach?`<div class="coach">감독 <b>${m.coach}</b></div>`:''}<div class="pt">${h}</div>
 ${(m.subsG||[]).map(([mn,ins])=>`<h6>${mn}분 교체 투입</h6><div class="bc">${ins.map(x=>`<span class="u">${x}</span>`).join('')}</div>`).join('')}<h6>후보 명단 ${bench?'(흰색 = 교체 투입)':''}</h6>${bench?`<div class="bc">${bench}</div>`:'<div class="mn" style="margin:0">확인되는 대로 추가합니다</div>'}
-${m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGoals}</div>`:''}
+${m.cards&&m.cards.length?`<h6>경고 · 퇴장</h6><div class="mn" style="margin:0">${m.cards.map(c=>`${c[1]==='R'?'🟥':'🟨'} ${c[0]}${c[2]?' '+c[2]+"'":''}`).join(' · ')}</div>`:''}${m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGoals}</div>`:''}
 ${st?`<h6>경기 기록 (한국 · ${m.opp})</h6>${st}`:''}<div class="mn">▼ 교체 아웃 · ▲ 교체 투입 · ⚽ 득점${m.note?' · '+m.note:''}</div></div>`};
 const det=r=>{const k=r[0]+'|'+r[2],x=X[k],bt=`<div class="rbt"><button type="button" data-mv="lu" data-k="${k}">⚽ 라인업</button><button type="button" data-mv="rec" data-k="${k}">📊 경기 기록</button></div>`;if(!x)return bt;const row=(l,v)=>v?`<div><dt>${l}</dt><dd>${v}</dd></div>`:'';
 return bt+`<details class="dx"><summary>경기 상세 · 상대팀 기록</summary><dl>${row('한국 포메이션',x.f)}${row('한국 선발',x.xi)}${row('상대 포메이션',x.of)}${row('경기 흐름·전술',x.tac)}${row('상대팀 기록',x.o)}</dl></details>`};
@@ -501,7 +503,8 @@ const recCard=k=>{const m=MC[k],[d,o]=k.split('|'),r=res.find(x=>x[0]===d&&x[2]=
 const st=((m&&m.stats)||[]).map(([l,a,b])=>{const fa=parseFloat(a),fb=parseFloat(b),p=fa+fb?100*fa/(fa+fb):50;return `<div class="ms"><em>${l}</em><b>${a}</b><div><i style="width:${p}%"></i></div><b>${b}</b></div>`}).join('');
 const sub=[...((m&&m.subs)||[]).map(([mn,i,ot])=>`${mn}' ${i} ↔ ${ot}`),...((m&&m.subsG)||[]).map(([mn,ins,outs])=>`${mn}' ${ins.join('·')} 투입 / ${outs.join('·')} 교체`)].join(' · ');
 return `<div class="mc rec"><div class="rr">${r[3]||''} ${RLs[r[4]]||''}</div>
-<h6>한국 득점</h6><div class="mn" style="margin:0">${gl.length?gl.map(g=>`${g[0]}${g[1]?' '+g[1]+"'":''}`).join(' · '):(r[5]||'확인 중')}</div>
+${m&&m.coach?`<div class="coach" style="text-align:center">감독 <b>${m.coach}</b>${m.oppCoach?` · ${m.opp} 감독 ${m.oppCoach}`:''}</div>`:''}<h6>한국 득점 (도움)</h6><div class="mn" style="margin:0">${gl.length?gl.map(g=>`${g[0]}${g[1]?' '+g[1]+"'":''}${g[2]?` <span style="opacity:.8">(도움 ${g[2]})</span>`:''}`).join(' · '):(r[5]||'확인 중')}${gl.some(g=>g[0]!=='상대 자책골'&&g[2]===undefined)?'<br><span style="opacity:.75">도움 표시가 없는 골은 도움 기록 확인 중</span>':''}</div>
+<h6>경고 · 퇴장</h6><div class="mn" style="margin:0">${m&&m.cards?(m.cards.length?m.cards.map(c=>`${c[1]==='R'?'🟥 퇴장':'🟨 경고'} ${c[0]}${c[2]?' '+c[2]+"'":''}`).join(' · '):(m.cardsSrc||'없음')):'확인 중'}</div>
 ${m&&m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGoals}</div>`:''}
 ${sub?`<h6>교체</h6><div class="mn" style="margin:0">${sub}</div>`:''}
 ${st?`<h6>경기 기록 (한국 · ${m.opp})</h6>${st}`:`<div class="mn">점유율·슈팅 등 세부 기록은 공식 기록이 확인되는 대로 추가합니다.</div>`}${m&&m.note&&!m.xi?`<div class="mn">${m.note}</div>`:''}
@@ -525,7 +528,7 @@ let keys;if(cc){keys=res.filter(r=>r[1]===cc&&/\d/.test(r[3])).map(r=>r[0]+'|'+r
 if(hd)hd.textContent=cm?cm.n+' · 지난 경기 라인업':'라인업 · 경기 기록';
 if(!keys.length){g.innerHTML=`<p class="empty">이 대회에서 치른 경기가 아직 없습니다.</p>`;return}
 g.innerHTML=keys.map(k=>{const [d,o]=k.split('|');const r=res.find(x=>x[0]===d&&x[2]===o);const sc=r?` <span>${r[3]} ${r[4]==='W'?'승':r[4]==='D'?'무':'패'}</span>`:'';const m=MC[k];
-const body=m&&m.xi?mcard(k):`<div class="mc"><div class="mh"><b>한국 선발 라인업</b></div><div class="mn" style="font-size:13px">선발 전원(수비·골키퍼)이 아직 공식 기록으로 확인되지 않아 경기장 그림은 준비 중입니다.${m&&m.note?'<br>확인된 내용: '+m.note:''}${m&&m.goals?'<br>득점: '+m.goals.map(g=>g[0]+(g[1]?' '+g[1]+"'":'')).join(' · '):''}</div></div>`;
+const body=m&&m.xi?mcard(k):`<div class="mc"><div class="mh"><b>한국 선발 라인업</b></div>${m&&m.coach?`<div class="coach">감독 <b>${m.coach}</b></div>`:''}<div class="mn" style="font-size:13px">선발 전원(수비·골키퍼)이 아직 공식 기록으로 확인되지 않아 경기장 그림은 준비 중입니다.${m&&m.note?'<br>확인된 내용: '+m.note:''}${m&&m.goals?'<br>득점: '+m.goals.map(g=>g[0]+(g[1]?' '+g[1]+"'":'')).join(' · '):''}</div></div>`;
 return `<div id="lu-${d}" class="mcw"><p class="mct">${d.replace(/-/g,'.')} · 대한민국 vs ${o}${sc}${r?` · ${r[5].split(' · ')[0]}`:''}</p>${body}</div>`}).join('')};renderLU('');
 let csel='전체';
 const groups={'전체':()=>true,'진행·예정':c=>c.s!=='done','종료':c=>c.s==='done'};
