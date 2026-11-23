@@ -212,6 +212,19 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 .tlp{margin-top:12px}.tlp .mc{max-width:none}
 .tlp .wait{padding:12px 14px;border-radius:10px;background:#fff5f5;border:1px solid #f1c4c8;font-size:14px;line-height:1.6;color:#333}
 .tlp .wait b{color:var(--red)}.tlp .wait a{color:var(--blue);font-weight:700}
+.rbt{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.rbt button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:16px;border:1.5px solid #c42532;background:#fff;color:#c42532;cursor:pointer;min-height:32px}
+.rbt button:hover{background:#c42532;color:#fff}
+.mvbg{position:fixed;inset:0;background:rgba(10,14,24,.65);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:24px 12px;overflow:auto}
+.mvbx{position:relative;width:100%;max-width:520px;animation:mvin .18s ease-out}
+@keyframes mvin{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+.mvbx .mc{margin:0;max-width:none;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.mvt{background:#fff;color:#111;border-radius:10px 10px 0 0;padding:10px 44px 8px 14px;font-weight:800;font-size:15px}
+.mvt span{color:#c42532}.mvt+.mc{border-radius:0 0 10px 10px}
+.mvx{position:absolute;right:8px;top:6px;width:32px;height:32px;border-radius:50%;border:0;background:#eee;font-size:18px;cursor:pointer}
+.mvw{background:#fff;border-radius:0 0 10px 10px;padding:14px;font-size:14px;line-height:1.7;color:#333}
+.mvw b{color:#c42532}
+.mc.rec .rr{font-size:28px;font-weight:900;text-align:center;margin:6px 0}
 .mcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;align-items:start}
 .mcg .mc{margin:0;max-width:none}
 .mcw{scroll-margin-top:16px;border-radius:12px}.mcw:target{outline:3px solid #f2b705;outline-offset:4px}
@@ -475,8 +488,27 @@ return `<div class="mc"><div class="mh"><b>한국 선발 라인업</b><span clas
 <h6>후보 명단 ${bench?'(흰색 = 교체 투입)':''}</h6>${bench?`<div class="bc">${bench}</div>`:'<div class="mn" style="margin:0">확인되는 대로 추가합니다</div>'}
 ${m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGoals}</div>`:''}
 ${st?`<h6>경기 기록 (한국 · ${m.opp})</h6>${st}`:''}<div class="mn">▼ 교체 아웃 · ▲ 교체 투입 · ⚽ 득점${m.note?' · '+m.note:''}</div></div>`};
-const det=r=>{const x=X[r[0]+'|'+r[2]];if(!x)return '';const row=(l,v)=>v?`<div><dt>${l}</dt><dd>${v}</dd></div>`:'';
-return `<details class="dx"><summary>경기 상세 · 상대팀 기록</summary><dl>${row('한국 포메이션',x.f)}${row('한국 선발',x.xi)}${row('상대 포메이션',x.of)}${row('경기 흐름·전술',x.tac)}${row('상대팀 기록',x.o)}</dl></details>`};
+const det=r=>{const k=r[0]+'|'+r[2],x=X[k],bt=`<div class="rbt"><button type="button" data-mv="lu" data-k="${k}">⚽ 라인업</button><button type="button" data-mv="rec" data-k="${k}">📊 경기 기록</button></div>`;if(!x)return bt;const row=(l,v)=>v?`<div><dt>${l}</dt><dd>${v}</dd></div>`:'';
+return bt+`<details class="dx"><summary>경기 상세 · 상대팀 기록</summary><dl>${row('한국 포메이션',x.f)}${row('한국 선발',x.xi)}${row('상대 포메이션',x.of)}${row('경기 흐름·전술',x.tac)}${row('상대팀 기록',x.o)}</dl></details>`};
+{const RLs={W:'승',D:'무',L:'패'};
+const recCard=k=>{const m=MC[k],[d,o]=k.split('|'),r=res.find(x=>x[0]===d&&x[2]===o)||[],gl=(m&&m.goals)||[];
+const st=((m&&m.stats)||[]).map(([l,a,b])=>{const fa=parseFloat(a),fb=parseFloat(b),p=fa+fb?100*fa/(fa+fb):50;return `<div class="ms"><em>${l}</em><b>${a}</b><div><i style="width:${p}%"></i></div><b>${b}</b></div>`}).join('');
+const sub=((m&&m.subs)||[]).map(([mn,i,ot])=>`${mn}' ${i} ↔ ${ot}`).join(' · ');
+return `<div class="mc rec"><div class="rr">${r[3]||''} ${RLs[r[4]]||''}</div>
+<h6>한국 득점</h6><div class="mn" style="margin:0">${gl.length?gl.map(g=>`${g[0]}${g[1]?' '+g[1]+"'":''}`).join(' · '):(r[5]||'확인 중')}</div>
+${m&&m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGoals}</div>`:''}
+${sub?`<h6>교체</h6><div class="mn" style="margin:0">${sub}</div>`:''}
+${st?`<h6>경기 기록 (한국 · ${m.opp})</h6>${st}`:`<div class="mn">점유율·슈팅 등 세부 기록은 공식 기록이 확인되는 대로 추가합니다.</div>`}
+${X[k]&&X[k].tac?`<h6>경기 흐름</h6><div class="mn" style="margin:0;font-size:12px">${X[k].tac}</div>`:''}</div>`};
+const show=(mode,k)=>{const [d,o]=k.split('|'),x=X[k]||{};
+let body;if(mode==='lu'){body=MC[k]?mcard(k):`<div class="mvw"><b>이 경기의 선발·후보·교체 기록은 아직 확인 중입니다.</b>${x.f?`<br>포메이션: ${x.f}`:''}${x.xi?`<br>선발: ${x.xi}`:''}<br>공식 기록이 확인되는 대로 경기장 그림으로 추가합니다.</div>`}else body=recCard(k);
+const bg=document.createElement('div');bg.className='mvbg';bg.setAttribute('role','dialog');bg.setAttribute('aria-modal','true');
+bg.innerHTML=`<div class="mvbx"><div class="mvt">${d.replace(/-/g,'.')} · 대한민국 vs ${o} <span>${mode==='lu'?'라인업':'경기 기록'}</span></div><button class="mvx" aria-label="닫기">×</button>${body}</div>`;
+const close=()=>{bg.remove();document.removeEventListener('keydown',esc)},esc=e=>{if(e.key==='Escape')close()};
+bg.addEventListener('click',e=>{if(e.target===bg||e.target.classList.contains('mvx'))close()});document.addEventListener('keydown',esc);
+document.body.appendChild(bg);bg.querySelector('.mvx').focus()};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-mv]');if(b){e.preventDefault();show(b.dataset.mv,b.dataset.k)}})}
+
 {const NEXT='2026-11-25|에콰도르',b=document.getElementById('tlu'),pn=document.getElementById('tlp');
 if(b&&pn){b.addEventListener('click',()=>{const open=pn.hidden;pn.hidden=!open;b.setAttribute('aria-expanded',open);
 if(open){pn.innerHTML=MC[NEXT]?mcard(NEXT):`<div class="wait"><b>선발 라인업은 경기 약 1시간 전에 발표됩니다.</b><br>발표되면 이 칸에 선발 11명과 후보 명단을 경기장 그림으로 올리고, 경기 중·후에는 교체와 득점, 경기 기록을 이어서 반영합니다.<br><a href="#lineups">지난 경기 라인업 보기 →</a></div>`}})}}
