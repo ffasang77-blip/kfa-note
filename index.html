@@ -328,7 +328,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 </main>
 
 <section class="band view" id="lineups" hidden><div class="wrap">
-<h2>라인업 · 경기 기록</h2>
+<h2 id="luh">라인업 · 경기 기록</h2>
 <p class="note"><a href="#comps">← 경기 노트로 돌아가기</a></p>
 <p>경기별 선발 라인업과 후보 명단, 교체 시간, 득점, 경기 기록을 경기장 그림으로 정리했습니다. 공식 기록으로 확인된 경기부터 차례로 추가합니다. 흐린 선수는 교체로 나간 선수이고, 초록 글씨가 교체로 들어온 선수입니다.</p>
 <div class="mcg" id="mcgrid"></div>
@@ -467,14 +467,14 @@ const play='<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height=
 
 /* 경기 카드 데이터: xi는 [골키퍼, 수비(왼→오), 미드필드…, 공격] 순서 */
 const MC={
-"2026-11-13|사우디아라비아":{f:"4-4-2",xi:["김승규","조현택","김민재","이한범","설영우","황희찬","박진섭","황인범","이강인","손흥민","오현규"],
+"2026-11-13|사우디아라비아":{t:"남자 A",f:"4-4-2",xi:["김승규","조현택","김민재","이한범","설영우","황희찬","박진섭","황인범","이강인","손흥민","오현규"],
  bench:["이명재","최준","이재성","김지수","오세훈","엄지성","박태준","손정범","송민규","이동경","정우영","김봉수","송범근","신민하","조현우"],
  subs:[[45,"이명재","조현택"],[66,"최준","설영우"],[66,"이재성","박진섭"],[66,"김지수","이한범"],[66,"오세훈","오현규"],[81,"엄지성","황희찬"]],
  goals:[["오현규","47"],["이재성","68"]],opp:"사우디",oppGoals:"알사하피 45+1' · 칸노 56' · 알암리 59'",
  stats:[["점유율","47%","53%"],["유효슈팅","6","5"],["코너킥","2","2"],["파울","14","11"]],
  note:"기록: ESPN 경기 기록 · 포메이션은 기록처에 따라 4-4-2 / 4-2-3-1로 다르게 표기"},
-"2026-06-12|체코":{f:"3-4-2-1",xi:["김승규","이한범","김민재","이기혁","이태석","황인범","백승호","설영우","이강인","이재성","손흥민"],goals:[["황인범",""],["오현규",""]],note:"후보·교체 시간은 확인되는 대로 추가 · 좌우 배치는 참고용"},
-"2026-04-01|오스트리아":{f:"3-4-3",xi:["김승규","김주성","김민재","이한범","이태석","김진규","백승호","설영우","이재성","손흥민","이강인"],note:"후보·교체 시간은 확인되는 대로 추가 · 좌우 배치는 참고용"}
+"2026-06-12|체코":{t:"남자 A",f:"3-4-2-1",xi:["김승규","이한범","김민재","이기혁","이태석","황인범","백승호","설영우","이강인","이재성","손흥민"],goals:[["황인범",""],["오현규",""]],note:"후보·교체 시간은 확인되는 대로 추가 · 좌우 배치는 참고용"},
+"2026-04-01|오스트리아":{t:"남자 A",f:"3-4-3",xi:["김승규","김주성","김민재","이한범","이태석","김진규","백승호","설영우","이재성","손흥민","이강인"],note:"후보·교체 시간은 확인되는 대로 추가 · 좌우 배치는 참고용"}
 };
 const mcard=(k)=>{const m=MC[k];if(!m)return '';
 const rows=[1,...m.f.split('-').map(Number)],sub=m.subs||[],gl=m.goals||[];
@@ -509,11 +509,11 @@ bg.addEventListener('click',e=>{if(e.target===bg||e.target.classList.contains('m
 document.body.appendChild(bg);bg.querySelector('.mvx').focus()};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-mv]');if(b){e.preventDefault();show(b.dataset.mv,b.dataset.k)}})}
 
-{const NEXT='2026-11-25|에콰도르',b=document.getElementById('tlu'),pn=document.getElementById('tlp');
+{const NEXT='2026-11-25|에콰도르',NT='U-17 남자',b=document.getElementById('tlu'),pn=document.getElementById('tlp');
 if(b&&pn){b.addEventListener('click',()=>{const open=pn.hidden;pn.hidden=!open;b.setAttribute('aria-expanded',open);
-if(open){pn.innerHTML=MC[NEXT]?mcard(NEXT):`<div class="wait"><b>선발 라인업은 경기 약 1시간 전에 발표됩니다.</b><br>발표되면 이 칸에 선발 11명과 후보 명단을 경기장 그림으로 올리고, 경기 중·후에는 교체와 득점, 경기 기록을 이어서 반영합니다.<br><a href="#lineups">지난 경기 라인업 보기 →</a></div>`}})}}
+if(open){pn.innerHTML=MC[NEXT]?mcard(NEXT):`<div class="wait"><b>선발 라인업은 경기 약 1시간 전에 발표됩니다.</b><br>발표되면 이 칸에 선발 11명과 후보 명단을 경기장 그림으로 올리고, 경기 중·후에는 교체와 득점, 경기 기록을 이어서 반영합니다.<br><a href="#lineups:${encodeURIComponent(NT)}">${NT} 지난 경기 라인업 보기 →</a></div>`}})}}
 
-{const g=document.getElementById('mcgrid');if(g){const keys=Object.keys(MC).sort().reverse();g.innerHTML=keys.map(k=>{const [d,o]=k.split('|');const r=(typeof res!=='undefined'?res:[]).find(x=>x[0]===d&&x[2]===o);const sc=r?` <span>${r[3]} ${r[4]==='W'?'승':r[4]==='D'?'무':'패'}</span>`:'';return `<div id="lu-${d}" class="mcw"><p class="mct">${d.replace(/-/g,'.')} · 대한민국 vs ${o}${sc}</p>${mcard(k)}</div>`}).join('')}}
+window.renderLU=team=>{const g=document.getElementById('mcgrid'),hd=document.getElementById('luh');if(!g)return;const keys=Object.keys(MC).filter(k=>!team||MC[k].t===team).sort().reverse();if(hd)hd.textContent=team?team+' 대표팀 라인업 · 경기 기록':'라인업 · 경기 기록';if(!keys.length){g.innerHTML=`<p class="empty">${team} 대표팀의 지난 경기 라인업은 아직 공식 기록으로 확인되지 않았습니다. 확인되는 대로 경기장 그림으로 추가합니다.</p>`;return}g.innerHTML=keys.map(k=>{const [d,o]=k.split('|');const r=(typeof res!=='undefined'?res:[]).find(x=>x[0]===d&&x[2]===o);const sc=r?` <span>${r[3]} ${r[4]==='W'?'승':r[4]==='D'?'무':'패'}</span>`:'';return `<div id="lu-${d}" class="mcw"><p class="mct">${d.replace(/-/g,'.')} · 대한민국 vs ${o}${sc}</p>${mcard(k)}</div>`}).join('')};renderLU('');
 let csel='전체';
 const groups={'전체':()=>true,'진행·예정':c=>c.s!=='done','종료':c=>c.s==='done'};
 function drawC(){
@@ -528,7 +528,7 @@ return `<article class="comp" id="c-${c.k}"><header><div class="row"><div><span 
 drawC();
 
 const homeEl=document.getElementById('home'),fbEl=document.getElementById('free-board'),luEl=document.getElementById('lineups');
-function route(){const hs=location.hash.slice(1);const fb=hs==='free-board',lu=hs==='lineups'||hs.startsWith('lu-');homeEl.hidden=fb||lu;fbEl.hidden=!fb;luEl.hidden=!lu;if(lu&&hs==='lineups'){luEl.scrollIntoView({block:'start'});return}
+function route(){const hs=location.hash.slice(1);const fb=hs==='free-board',lu=hs==='lineups'||hs.startsWith('lineups:')||hs.startsWith('lu-');if(lu&&window.renderLU)renderLU(hs.startsWith('lineups:')?decodeURIComponent(hs.slice(8)):'');homeEl.hidden=fb||lu;fbEl.hidden=!fb;luEl.hidden=!lu;if(lu&&!hs.startsWith('lu-')){luEl.scrollIntoView({block:'start'});return}
 document.querySelectorAll('#side a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+hs));
 if(fb){fbEl.scrollIntoView({block:'start'})}else if(hs){const t=document.getElementById(hs);if(t)t.scrollIntoView({block:'start'})}}
 window.addEventListener('hashchange',route);route();
