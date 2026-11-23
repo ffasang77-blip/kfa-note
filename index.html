@@ -266,11 +266,6 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <div class="content">
 
 <main id="home">
-<section class="band" id="lineups"><div class="wrap">
-<h2>라인업 · 경기 기록 <b class="newb">NEW</b></h2>
-<p>경기별 선발 라인업과 후보 명단, 교체 시간, 득점, 경기 기록을 경기장 그림으로 정리했습니다. 공식 기록으로 확인된 경기부터 차례로 추가합니다. 흐린 선수는 교체로 나간 선수이고, 초록 글씨가 교체로 들어온 선수입니다.</p>
-<div class="mcg" id="mcgrid"></div>
-</div></section>
 <section class="band" id="comps"><div class="wrap">
 <h2>대회별 일정·결과·하이라이트</h2>
 <p>대회마다 다가올 경기와 상대팀 기록, 지난 경기 결과, FIFA 공식 하이라이트를 한 장에 모았습니다. 스코어는 한국 득점이 앞이며, 다가올 경기는 한국시간과 현지 시간을 함께 적었습니다. 지난 경기마다 '경기 상세'를 펼치면 포메이션·선발·전술과 상대팀 기록을 볼 수 있습니다. 경기 응원과 자유로운 이야기는 커뮤니티 메뉴에서 네이버 블로그로 이어집니다.</p>
@@ -319,6 +314,12 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 </div></section>
 </main>
 
+<section class="band view" id="lineups" hidden><div class="wrap">
+<h2>라인업 · 경기 기록</h2>
+<p class="note"><a href="#comps">← 경기 노트로 돌아가기</a></p>
+<p>경기별 선발 라인업과 후보 명단, 교체 시간, 득점, 경기 기록을 경기장 그림으로 정리했습니다. 공식 기록으로 확인된 경기부터 차례로 추가합니다. 흐린 선수는 교체로 나간 선수이고, 초록 글씨가 교체로 들어온 선수입니다.</p>
+<div class="mcg" id="mcgrid"></div>
+</div></section>
 <section class="band view" id="free-board" hidden><div class="wrap"><div class="bwrap">
 <h2>커뮤니티</h2>
 <p class="note"><a href="#comps">← 경기 노트로 돌아가기</a></p>
@@ -474,8 +475,8 @@ return `<div class="mc"><div class="mh"><b>한국 선발 라인업</b><span clas
 <h6>후보 명단 ${bench?'(흰색 = 교체 투입)':''}</h6>${bench?`<div class="bc">${bench}</div>`:'<div class="mn" style="margin:0">확인되는 대로 추가합니다</div>'}
 ${m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGoals}</div>`:''}
 ${st?`<h6>경기 기록 (한국 · ${m.opp})</h6>${st}`:''}<div class="mn">▼ 교체 아웃 · ▲ 교체 투입 · ⚽ 득점${m.note?' · '+m.note:''}</div></div>`};
-const det=r=>{const k=r[0]+'|'+r[2],x=X[k]||{},mcH=mcard(k);if(!X[k]&&!mcH)return '';const row=(l,v)=>v?`<div><dt>${l}</dt><dd>${v}</dd></div>`:'';
-return `${mcH?`<a class="lub" href="#lu-${r[0]}">⚽ 라인업 보기</a>`:''}<details class="dx"><summary>경기 상세 · 라인업 · 상대팀 기록</summary>${mcH}<dl>${mcH?'':row('한국 포메이션',x.f)+row('한국 선발',x.xi)}${row('상대 포메이션',x.of)}${row('경기 흐름·전술',x.tac)}${row('상대팀 기록',x.o)}</dl></details>`};
+const det=r=>{const x=X[r[0]+'|'+r[2]];if(!x)return '';const row=(l,v)=>v?`<div><dt>${l}</dt><dd>${v}</dd></div>`:'';
+return `<details class="dx"><summary>경기 상세 · 상대팀 기록</summary><dl>${row('한국 포메이션',x.f)}${row('한국 선발',x.xi)}${row('상대 포메이션',x.of)}${row('경기 흐름·전술',x.tac)}${row('상대팀 기록',x.o)}</dl></details>`};
 {const NEXT='2026-11-25|에콰도르',b=document.getElementById('tlu'),pn=document.getElementById('tlp');
 if(b&&pn){b.addEventListener('click',()=>{const open=pn.hidden;pn.hidden=!open;b.setAttribute('aria-expanded',open);
 if(open){pn.innerHTML=MC[NEXT]?mcard(NEXT):`<div class="wait"><b>선발 라인업은 경기 약 1시간 전에 발표됩니다.</b><br>발표되면 이 칸에 선발 11명과 후보 명단을 경기장 그림으로 올리고, 경기 중·후에는 교체와 득점, 경기 기록을 이어서 반영합니다.<br><a href="#lineups">지난 경기 라인업 보기 →</a></div>`}})}}
@@ -494,8 +495,8 @@ return `<article class="comp" id="c-${c.k}"><header><div class="row"><div><span 
 }
 drawC();
 
-const homeEl=document.getElementById('home'),fbEl=document.getElementById('free-board');
-function route(){const hs=location.hash.slice(1);const fb=hs==='free-board';homeEl.hidden=fb;fbEl.hidden=!fb;
+const homeEl=document.getElementById('home'),fbEl=document.getElementById('free-board'),luEl=document.getElementById('lineups');
+function route(){const hs=location.hash.slice(1);const fb=hs==='free-board',lu=hs==='lineups'||hs.startsWith('lu-');homeEl.hidden=fb||lu;fbEl.hidden=!fb;luEl.hidden=!lu;if(lu&&hs==='lineups'){luEl.scrollIntoView({block:'start'});return}
 document.querySelectorAll('#side a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+hs));
 if(fb){fbEl.scrollIntoView({block:'start'})}else if(hs){const t=document.getElementById(hs);if(t)t.scrollIntoView({block:'start'})}}
 window.addEventListener('hashchange',route);route();
