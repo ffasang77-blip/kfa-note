@@ -309,7 +309,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 </nav>
 <div class="mbg" id="mbg" hidden></div>
 <div class="mpan" id="mp-pk" role="dialog" aria-label="승부차기 게임" hidden><div class="mh"><span>공을 골대 쪽으로 쓸어 올려 슛!</span><button class="mx" type="button" aria-label="닫기">✕</button></div><div class="pkg"><canvas id="pkb" width="340" height="300" style="width:100%;height:auto;display:block;border-radius:10px;cursor:pointer;touch-action:none;box-shadow:0 2px 8px rgba(0,0,0,.25)"></canvas></div></div>
-<div class="mpan wide" id="mp-lt" role="dialog" aria-label="로또 번호 생성기" hidden><div class="mh"><span>재미로만 즐겨 주세요</span><a href="https://ffasang77-blip.github.io/kfa-note/lotto.html" target="_blank" rel="noopener">새 창으로 ↗</a><button class="mx" type="button" aria-label="닫기">✕</button></div><iframe id="lt-if" title="로또 6/45 번호 생성기"></iframe></div>
+<div class="mpan wide" id="mp-lt" role="dialog" aria-label="로또 번호 생성기" hidden><div class="mh"><span>재미로만 즐겨 주세요</span><a href="https://ffasang77-blip.github.io/kfa-note/lotto.html?v=20261124b" target="_blank" rel="noopener">새 창으로 ↗</a><button class="mx" type="button" aria-label="닫기">✕</button></div><iframe id="lt-if" title="로또 6/45 번호 생성기"></iframe></div>
 <div class="content">
 
 <main id="home">
@@ -762,7 +762,7 @@ function closeAll(){ids.forEach(function(k){var B=document.getElementById('mb-'+
 ids.forEach(function(k){var B=document.getElementById('mb-'+k),P=document.getElementById('mp-'+k);if(!B||!P)return;
 B.addEventListener('click',function(){var o=B.getAttribute('aria-expanded')!=='true';closeAll();if(!o)return;
 B.setAttribute('aria-expanded','true');B.querySelector('.ar').textContent='▼';P.hidden=false;if(bg)bg.hidden=false;
-if(k==='lt'){var f=document.getElementById('lt-if');if(f&&!f.getAttribute('src'))f.setAttribute('src','https://ffasang77-blip.github.io/kfa-note/lotto.html')}});
+if(k==='lt'){var f=document.getElementById('lt-if');if(f&&!f.getAttribute('src'))f.setAttribute('src','https://ffasang77-blip.github.io/kfa-note/lotto.html?v='+Date.now())}});
 P.querySelector('.mx').addEventListener('click',closeAll)});
 if(bg)bg.addEventListener('click',closeAll);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll()});
