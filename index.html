@@ -254,7 +254,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 .mpan .mh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-size:13.5px}
 .mpan .mh a{color:#facc15;font-weight:700;text-decoration:none;white-space:nowrap;margin-left:auto}
 .mpan .mx{flex:none;width:32px;height:32px;border-radius:8px;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:16px;cursor:pointer}
-.mpan .pkg{width:340px;max-width:100%;margin:0 auto}
+.mpan .pkg{width:352px;max-width:100%;margin:0 auto}
 .mpan iframe{display:block;width:100%;height:80vh;border:0;border-radius:10px;background:#0b0f1e}
 .mvb b{display:inline-block;margin-left:6px;background:#fff;color:var(--blue);border-radius:16px;padding:1px 12px}
 </style>
@@ -308,7 +308,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <button class="mini" id="mb-lt" type="button" aria-expanded="false" aria-controls="mp-lt">🎱 로또 번호 생성기 <span class="ar">▶</span></button>
 </nav>
 <div class="mbg" id="mbg" hidden></div>
-<div class="mpan" id="mp-pk" role="dialog" aria-label="승부차기 게임" hidden><div class="mh"><span>노란 원이 골키퍼가 없는 곳에 올 때 탭!</span><button class="mx" type="button" aria-label="닫기">✕</button></div><div class="pkg"><canvas id="pkb" width="300" height="250" style="width:100%;height:auto;display:block;border-radius:10px;cursor:pointer;touch-action:manipulation;box-shadow:0 2px 8px rgba(0,0,0,.25)"></canvas></div></div>
+<div class="mpan" id="mp-pk" role="dialog" aria-label="승부차기 게임" hidden><div class="mh"><span>공을 골대 쪽으로 쓸어 올려 슛!</span><button class="mx" type="button" aria-label="닫기">✕</button></div><div class="pkg"><canvas id="pkb" width="340" height="300" style="width:100%;height:auto;display:block;border-radius:10px;cursor:pointer;touch-action:none;box-shadow:0 2px 8px rgba(0,0,0,.25)"></canvas></div></div>
 <div class="mpan wide" id="mp-lt" role="dialog" aria-label="로또 번호 생성기" hidden><div class="mh"><span>재미로만 즐겨 주세요</span><a href="https://ffasang77-blip.github.io/kfa-note/lotto.html" target="_blank" rel="noopener">새 창으로 ↗</a><button class="mx" type="button" aria-label="닫기">✕</button></div><iframe id="lt-if" title="로또 6/45 번호 생성기"></iframe></div>
 <div class="content">
 
@@ -635,59 +635,123 @@ if(/github\.io$/.test(location.hostname)){const mv=document.getElementById('mvb'
 </script>
 <script>
 (function(){
-var cv=document.getElementById('pkb'),c=cv.getContext('2d'),W=300,H=250;
-var G={x:50,y:58,w:200,h:72};
-var st='idle',t=0,aimX=150,kx=150,kv=1.6,ball=null,msg='',msgT=0,streak=0,best=0,goals=0;
-try{best=+localStorage.getItem('pkbBest')||0}catch(e){}
-function tap(e){e.preventDefault();
-  if(st==='idle'||st==='over'){st='aim';streak=0;return;}
-  if(st==='aim'){ball={x:150,y:220,tx:aimX,ty:G.y+G.h*.55,p:0};st='shoot';}
-}
-cv.addEventListener('pointerdown',tap);
-function txt(s,y,sz,col){c.font='bold '+sz+'px sans-serif';c.textAlign='center';c.lineWidth=4;
-  c.strokeStyle='rgba(0,0,0,.6)';c.strokeText(s,W/2,y);c.fillStyle=col||'#fff';c.fillText(s,W/2,y);}
+var cv=document.getElementById('pkb');if(!cv)return;
+var c=cv.getContext('2d'),W=340,H=300,dpr=Math.min(window.devicePixelRatio||1,2);
+cv.width=W*dpr;cv.height=H*dpr;c.setTransform(dpr,0,0,dpr,0,0);
+var G={x:60,y:72,w:220,h:80},SPOT={x:170,y:262};
+var mcol='#fff',st='idle',level=1,shots=[],score=0,best=0,msg='',sub='',msgT=0,t=0;
+var ball=null,kp=null,trail=[],drag=null,parts=[],netT=0,shake=0;
+try{best=+localStorage.getItem('pk2Best')||0}catch(e){}
+var ax=null;
+function snd(f,d,type,v,slide){try{if(!ax)ax=new(window.AudioContext||window.webkitAudioContext)();if(ax.state==='suspended')ax.resume();
+var o=ax.createOscillator(),g=ax.createGain(),n=ax.currentTime;o.type=type||'sine';o.frequency.setValueAtTime(f,n);if(slide)o.frequency.exponentialRampToValueAtTime(slide,n+d);
+g.gain.setValueAtTime(v||.15,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(g).connect(ax.destination);o.start(n);o.stop(n+d)}catch(e){}}
+function crowd(){try{if(!ax)return;var n=ax.currentTime,len=1.2,b=ax.createBuffer(1,ax.sampleRate*len,ax.sampleRate),d=b.getChannelData(0);
+for(var i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.min(1,i/2000)*(1-i/d.length);
+var s=ax.createBufferSource(),f=ax.createBiquadFilter(),g=ax.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=900;g.gain.value=.35;s.connect(f).connect(g).connect(ax.destination);s.start(n)}catch(e){}}
+function keeperFor(L){return{x:170,tx:170,reach:Math.min(46,24+L*3),spd:Math.min(9,3.2+L*.7),smart:Math.min(.8,.22+L*.09),lean:0,dive:0}}
+kp=keeperFor(1);
+function newGame(){level=1;score=0;shots=[];kp=keeperFor(1);st='ready';}
+function pos(e){var r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height,t:performance.now()}}
+cv.addEventListener('pointerdown',function(e){e.preventDefault();snd(1,.01,'sine',.0001);
+ if(st==='idle'||st==='over'){newGame();return}
+ if(st==='lvl'){st='ready';return}
+ if(st!=='ready')return;var p=pos(e);drag={pts:[p]};try{cv.setPointerCapture(e.pointerId)}catch(_){}});
+cv.addEventListener('pointermove',function(e){if(!drag)return;e.preventDefault();drag.pts.push(pos(e));});
+function up(e){if(!drag)return;var d=drag;drag=null;var p=d.pts,a=p[0],b=p[p.length-1];
+ var dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy),dt=Math.max(30,b.t-a.t);
+ if(dy>-18||len<25){mcol='#fff';msg='위로 쓸어 올려 차세요!';sub='';msgT=1.1;return}
+ var v=len/dt; // px per ms
+ // 휘어짐: 경로 중간 점이 직선에서 벗어난 정도
+ var dev=0;for(var i=1;i<p.length-1;i++){var q=p[i],cr=((q.x-a.x)*dy-(q.y-a.y)*dx)/len;if(Math.abs(cr)>Math.abs(dev))dev=cr}
+ var curve=Math.max(-40,Math.min(40,-dev*1.3));
+ var tx=SPOT.x+(dx/-dy)*175+curve*.55;
+ var pw=Math.max(0,Math.min(1,(v-.35)/1.5));
+ var ty=G.y+G.h-6-pw*(G.h+14)+ (Math.random()-.5)*6;
+ shoot(tx,ty,curve);}
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',function(){drag=null});
+function shoot(tx,ty,curve){st='fly';snd(140,.18,'triangle',.3,60);
+ ball={p:0,tx:tx,ty:ty,curve:curve,x:SPOT.x,y:SPOT.y,r:12,spin:0};
+ // 골키퍼 판단
+ var inGoal=tx>G.x&&tx<G.x+G.w,guess;
+ if(Math.random()<kp.smart&&inGoal)guess=tx+(Math.random()-.5)*30;else{var r=Math.random();guess=r<.4?G.x+45:r<.8?G.x+G.w-45:170}
+ kp.tx=Math.max(G.x+14,Math.min(G.x+G.w-14,guess));kp.delay=.12+Math.random()*.1-Math.min(.08,level*.01);}
+function resolve(){var b=ball,res,pts=0;
+ var post=(Math.abs(b.tx-G.x)<6||Math.abs(b.tx-G.x-G.w)<6||Math.abs(b.ty-G.y)<5)&&b.ty>G.y-6&&b.tx>G.x-6&&b.tx<G.x+G.w+6;
+ var inGoal=b.tx>G.x+4&&b.tx<G.x+G.w-4&&b.ty>G.y+4;
+ var kTop=G.y+G.h-62-(kp.dive?0:0),reachY=kp.dive?G.y+G.h-kp.reach*1.35:G.y+G.h-64;
+ var saved=inGoal&&Math.abs(b.tx-kp.x)<kp.reach&&b.ty>reachY-4;
+ if(post&&!inGoal){res='post';mcol='#fff';msg='골대 강타!';sub='아깝다~';snd(900,.4,'square',.12,700);shake=8}
+ else if(!inGoal){res='miss';mcol='#fff';msg=b.ty<G.y?'홈런볼…':'골대 밖!';sub='다음엔 정확하게';snd(220,.3,'sawtooth',.08,120)}
+ else if(saved){res='save';mcol='#93c5fd';msg='선방!';sub='골키퍼가 막았습니다';snd(300,.25,'square',.12,180);shake=5}
+ else{res='goal';pts=1;var corner=(b.tx<G.x+40||b.tx>G.x+G.w-40)&&b.ty<G.y+34;if(corner)pts=2;
+  mcol='#facc15';msg=corner?'구석 꽂았다! +2':'골~!!';sub=Math.abs(b.curve)>14?'환상적인 감아차기':'';netT=1;crowd();snd(523,.12,'sine',.2);setTimeout(function(){snd(784,.25,'sine',.2)},120);
+  for(var i=0;i<26;i++)parts.push({x:b.tx,y:b.ty,vx:(Math.random()-.5)*5,vy:-Math.random()*4-1,l:1,c:['#e11d2a','#1e40af','#fff','#facc15'][i%4]})}
+ score+=pts;shots.push(res==='goal');st='res';msgT=1.25;}
+function endShot(){ball=null;kp.dive=0;kp.lean=0;kp.x=170;kp.tx=170;
+ if(shots.length<5){st='ready';return}
+ var g=shots.filter(Boolean).length;
+ if(g>=3){level++;shots=[];kp=keeperFor(level);st='lvl';msg='레벨 '+(level-1)+' 통과!';sub=g+'/5골 · 골키퍼가 더 강해집니다';snd(660,.15);setTimeout(function(){snd(990,.3)},150)}
+ else{st='over';if(score>best){best=score;try{localStorage.setItem('pk2Best',best)}catch(e){}}}}
+// ---------- 그리기 ----------
+function txt(s,x,y,sz,col,al){c.font='900 '+sz+'px "Noto Sans KR",sans-serif';c.textAlign=al||'center';c.lineWidth=4;c.strokeStyle='rgba(0,0,0,.55)';c.strokeText(s,x,y);c.fillStyle=col||'#fff';c.fillText(s,x,y)}
+var crowdDots=[];for(var i=0;i<140;i++)crowdDots.push({x:Math.random()*W,y:8+Math.random()*48,c:['#e11d2a','#fff','#1e40af','#facc15','#64748b'][i%5]});
+function drawBall(x,y,r,sp){c.save();c.translate(x,y);c.rotate(sp);c.fillStyle='#fff';c.beginPath();c.arc(0,0,r,0,7);c.fill();c.strokeStyle='#1f2937';c.lineWidth=Math.max(.8,r*.08);c.stroke();
+ c.fillStyle='#111';c.beginPath();for(var k=0;k<5;k++){var a=k*1.2566-1.57;c.lineTo(Math.cos(a)*r*.38,Math.sin(a)*r*.38)}c.fill();
+ for(k=0;k<5;k++){var a2=k*1.2566-1.57;c.beginPath();c.arc(Math.cos(a2)*r*.92,Math.sin(a2)*r*.92,r*.22,0,7);c.fill()}c.restore()}
 function draw(){
-  var g=c.createLinearGradient(0,0,0,58);g.addColorStop(0,'#1e3a8a');g.addColorStop(1,'#3b5bb5');
-  c.fillStyle=g;c.fillRect(0,0,W,58);
-  for(var i=0;i<6;i++){c.fillStyle=i%2?'#2f8f3a':'#36a043';c.fillRect(0,58+i*32,W,32);}
-  c.strokeStyle='rgba(255,255,255,.3)';c.lineWidth=1;
-  for(var x=G.x;x<=G.x+G.w;x+=12){c.beginPath();c.moveTo(x,G.y);c.lineTo(x,G.y+G.h);c.stroke();}
-  for(var y=G.y;y<=G.y+G.h;y+=12){c.beginPath();c.moveTo(G.x,y);c.lineTo(G.x+G.w,y);c.stroke();}
-  c.strokeStyle='#fff';c.lineWidth=5;c.beginPath();c.moveTo(G.x,G.y+G.h);c.lineTo(G.x,G.y);c.lineTo(G.x+G.w,G.y);c.lineTo(G.x+G.w,G.y+G.h);c.stroke();
-  // 골키퍼
-  c.fillStyle='#16a34a';c.fillRect(kx-10,G.y+G.h-44,20,24);c.fillStyle='#111';c.fillRect(kx-9,G.y+G.h-20,18,20);
-  c.fillStyle='#f1c27d';c.beginPath();c.arc(kx,G.y+G.h-52,8,0,7);c.fill();
-  c.fillStyle='#fde047';c.beginPath();c.arc(kx-17,G.y+G.h-46,5,0,7);c.arc(kx+17,G.y+G.h-46,5,0,7);c.fill();
-  // 조준
-  if(st==='aim'){c.strokeStyle='#facc15';c.lineWidth=2;c.beginPath();c.arc(aimX,G.y+G.h*.55,9,0,7);c.stroke();}
-  // 공
-  var b=ball||{x:150,y:220},r=ball?11-5*ball.p:11;
-  c.fillStyle='#fff';c.beginPath();c.arc(b.x,b.y,r,0,7);c.fill();c.strokeStyle='#222';c.lineWidth=1;c.stroke();
-  c.fillStyle='#222';c.beginPath();c.arc(b.x,b.y,r*.35,0,7);c.fill();
-  // 상단 정보
-  c.fillStyle='rgba(0,0,0,.45)';c.fillRect(0,0,W,24);
-  c.fillStyle='#fff';c.font='bold 12px sans-serif';c.textAlign='left';c.fillText('🔥 연속골 '+streak,8,16);
-  c.textAlign='right';c.fillText('최고 '+best,W-8,16);
-  c.textAlign='center';c.fillStyle='#facc15';c.fillText('태극전사 승부차기',W/2,16);
-  if(st==='idle'){c.fillStyle='rgba(0,0,0,.45)';c.fillRect(0,24,W,H-24);
-    txt('⚽ 승부차기 한 판?',120,22,'#facc15');txt('탭하면 시작!',155,15);}
-  if(st==='aim')txt('노란 원이 빈 곳에 올 때 탭!',190,13);
-  if(st==='res')txt(msg,175,msg==='골~!!'?30:20,msg==='골~!!'?'#facc15':'#fff');
-  if(st==='over'){c.fillStyle='rgba(0,0,0,.55)';c.fillRect(0,24,W,H-24);
-    txt('연속 '+streak+'골!',125,28,'#facc15');txt('탭해서 다시 도전',165,14);}
+ c.save();if(shake>0){c.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake)}
+ var g=c.createLinearGradient(0,0,0,62);g.addColorStop(0,'#0f1b3d');g.addColorStop(1,'#26407a');c.fillStyle=g;c.fillRect(0,0,W,62);
+ crowdDots.forEach(function(d){c.fillStyle=d.c;c.globalAlpha=.55+.35*Math.sin(t*6+d.x);c.fillRect(d.x,d.y+(netT>0?Math.sin(t*30+d.x)*2:0),3,3)});c.globalAlpha=1;
+ for(var i=0;i<8;i++){c.fillStyle=i%2?'#2e8b3a':'#34a043';c.beginPath();var y0=62+i*30,y1=y0+30;c.moveTo(0,y0);c.lineTo(W,y0);c.lineTo(W,y1);c.lineTo(0,y1);c.fill()}
+ c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=2;c.beginPath();c.moveTo(0,G.y+G.h);c.lineTo(W,G.y+G.h);c.stroke();
+ c.beginPath();c.moveTo(30,G.y+G.h);c.lineTo(8,G.y+G.h+70);c.lineTo(W-8,G.y+G.h+70);c.lineTo(W-30,G.y+G.h);c.stroke();
+ c.fillStyle='#fff';c.beginPath();c.ellipse(SPOT.x,SPOT.y+10,4,2,0,0,7);c.fill();
+ // 그물
+ c.fillStyle='rgba(255,255,255,.08)';c.fillRect(G.x,G.y,G.w,G.h);
+ c.strokeStyle='rgba(255,255,255,.35)';c.lineWidth=1;var wob=netT>0?netT*6:0;
+ for(var x=G.x;x<=G.x+G.w;x+=11){c.beginPath();c.moveTo(x,G.y);c.quadraticCurveTo(x+Math.sin(x+t*20)*wob,G.y+G.h/2,x,G.y+G.h);c.stroke()}
+ for(var y=G.y;y<=G.y+G.h;y+=11){c.beginPath();c.moveTo(G.x,y);c.lineTo(G.x+G.w,y+Math.sin(y+t*20)*wob*.4);c.stroke()}
+ c.strokeStyle='#fff';c.lineWidth=6;c.lineCap='round';c.beginPath();c.moveTo(G.x,G.y+G.h);c.lineTo(G.x,G.y);c.lineTo(G.x+G.w,G.y);c.lineTo(G.x+G.w,G.y+G.h);c.stroke();c.lineCap='butt';
+ // 골키퍼
+ c.save();var fy=G.y+G.h;c.translate(kp.x,fy);c.rotate(kp.lean);
+ c.fillStyle='#111827';c.fillRect(-9,-22,7,22);c.fillRect(2,-22,7,22);
+ c.fillStyle='#f97316';c.fillRect(-12,-50,24,30);
+ c.fillStyle='#fde68a';c.fillRect(-24,-50,12,8);c.fillRect(12,-50,12,8);
+ c.fillStyle='#22c55e';c.beginPath();c.arc(-27,-46,6,0,7);c.arc(27,-46,6,0,7);c.fill();
+ c.fillStyle='#f1c27d';c.beginPath();c.arc(0,-58,9,0,7);c.fill();c.fillStyle='#111';c.fillRect(-9,-66,18,5);
+ c.restore();
+ // 공
+ if(ball){var sc=ball.r;c.fillStyle='rgba(0,0,0,.25)';c.beginPath();c.ellipse(ball.x,ball.sy||ball.y+sc,sc,sc*.35,0,0,7);c.fill();drawBall(ball.x,ball.y,sc,ball.spin)}
+ else drawBall(SPOT.x,SPOT.y,12,0);
+ // 스와이프 궤적
+ if(drag&&drag.pts.length>1){c.strokeStyle='rgba(250,204,21,.85)';c.lineWidth=4;c.lineCap='round';c.beginPath();drag.pts.forEach(function(p,i){i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y)});c.stroke();c.lineCap='butt'}
+ parts.forEach(function(p){c.globalAlpha=Math.max(0,p.l);c.fillStyle=p.c;c.fillRect(p.x,p.y,4,4)});c.globalAlpha=1;
+ c.restore();
+ // HUD
+ c.fillStyle='rgba(0,0,0,.5)';c.fillRect(0,0,W,24);
+ txt('Lv.'+level,8,17,13,'#facc15','left');txt('점수 '+score,W/2,17,13,'#fff');txt('최고 '+best,W-8,17,13,'#fff','right');
+ for(i=0;i<5;i++){var cx=W/2-44+i*22,cy=H-14;c.beginPath();c.arc(cx,cy,7,0,7);c.fillStyle=i<shots.length?(shots[i]?'#22c55e':'#ef4444'):'rgba(255,255,255,.35)';c.fill();c.strokeStyle='rgba(0,0,0,.4)';c.lineWidth=1;c.stroke()}
+ if(st==='idle'){veil();txt('⚽ 태극전사 승부차기',W/2,110,22,'#facc15');txt('공을 골대 쪽으로 쓸어 올려 슛!',W/2,148,14);txt('빠르게 = 높게 · 휘어서 = 감아차기',W/2,172,13,'#cbd5e1');txt('5개 중 3골 넣으면 다음 레벨',W/2,196,13,'#cbd5e1');txt('탭해서 시작',W/2,232,16,'#fff')}
+ if(st==='ready'&&!drag){txt('↑ 쓸어 올려 슛',W/2,H-34,13,'rgba(255,255,255,.9)')}
+ if(st==='res'||msgT>0&&st==='ready'){txt(msg,W/2,128,msg.length>6?22:30,st==='res'?mcol:'#fff');if(sub)txt(sub,W/2,154,13,'#e2e8f0')}
+ if(st==='lvl'){veil();txt(msg,W/2,118,26,'#facc15');txt(sub,W/2,148,13);txt('탭해서 계속',W/2,190,15)}
+ if(st==='over'){veil();txt('경기 종료',W/2,100,24,'#facc15');txt('레벨 '+level+' · 점수 '+score,W/2,134,18);txt(score>=best&&score>0?'🏆 최고 기록!':'최고 '+best+'점',W/2,162,14,'#e2e8f0');txt('탭해서 다시 도전',W/2,206,15)}
 }
+function veil(){c.fillStyle='rgba(6,12,30,.62)';c.fillRect(0,24,W,H-24)}
 var last=performance.now();
 function loop(n){var dt=Math.min(.05,(n-last)/1000);last=n;t+=dt;
-  var sp=1+streak*.12;
-  if(st==='aim'||st==='shoot'){aimX=150+Math.sin(t*2.4*sp)*92;
-    kx+=kv*sp*dt*60;if(kx<G.x+18||kx>G.x+G.w-18)kv=-kv;kx=Math.max(G.x+18,Math.min(G.x+G.w-18,kx));}
-  if(st==='shoot'){ball.p=Math.min(1,ball.p+dt*2.6);var e=1-(1-ball.p)*(1-ball.p);
-    ball.x=150+(ball.tx-150)*e;ball.y=220+(ball.ty-220)*e-Math.sin(ball.p*Math.PI)*15;
-    if(ball.p>=1){if(Math.abs(ball.tx-kx)<24){msg='선방!';st='res';msgT=1;}
-      else{streak++;msg='골~!!';st='res';msgT=.8;}}}
-  if(st==='res'){msgT-=dt;if(msgT<=0){ball=null;
-    if(msg==='골~!!'){st='aim';}else{if(streak>best){best=streak;try{localStorage.setItem('pkbBest',best)}catch(e){}}st='over';}}}
-  draw();requestAnimationFrame(loop);}
+ if(shake>0)shake=Math.max(0,shake-dt*30);if(netT>0)netT=Math.max(0,netT-dt*1.3);
+ parts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.15;p.l-=dt*.9});parts=parts.filter(function(p){return p.l>0});
+ if(msgT>0&&st!=='res')msgT-=dt;
+ if(st==='ready'){kp.x+=Math.sin(t*2.2)*.6*(1+level*.15);kp.x=Math.max(150,Math.min(190,kp.x))}
+ if(st==='fly'){var b=ball;b.p=Math.min(1,b.p+dt*1.9);var e=1-Math.pow(1-b.p,2);
+  b.x=SPOT.x+(b.tx-SPOT.x)*e+Math.sin(b.p*Math.PI)*b.curve*-.55;
+  var gy=SPOT.y+(G.y+G.h-SPOT.y)*e;b.sy=gy+b.r*.4;b.y=SPOT.y+(b.ty-SPOT.y)*e;b.r=12-6*e;b.spin+=dt*(10+Math.abs(b.curve)*.4);
+  if(kp.delay>0)kp.delay-=dt;else{var d=kp.tx-kp.x,s=kp.spd*dt*60;kp.x+=Math.abs(d)<s?d:Math.sign(d)*s;kp.dive=Math.abs(kp.tx-170)>25?1:0;kp.lean=kp.dive?Math.sign(kp.tx-170)*Math.min(1.1,Math.abs(kp.x-170)/60):0}
+  if(b.p>=1)resolve()}
+ if(st==='res'){msgT-=dt;if(netT>0&&ball){ball.y+=dt*20}if(msgT<=0)endShot()}
+ draw();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 })();
 </script>
