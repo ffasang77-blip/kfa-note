@@ -391,7 +391,7 @@ fx.forEach(f=>{f.k='m'+f.t.slice(0,10).replace(/-/g,'')});
 const res=[
 ["2026-11-22","u17wc","뉴칼레도니아","6-0","W","B조 2차전 · 박주호, 김지우 3골, 안선현, 한승민 · 32강 확정",U.ncl],
 ["2026-11-19","u17wc","우간다","3-0","W","B조 1차전 · 김지호, 상대 자책골, 김지우",U.uga],
-["2026-05","u17wc","우즈베키스탄","PK패","L","예선: AFC U-17 아시안컵(사우디) 8강 · 월드컵 진출권 확보"],
+["2026-05-17","u17wc","우즈베키스탄","2-2 (PK 3-5)","L","예선: AFC U-17 아시안컵(사우디) 8강 · 문지환, 안선현 · 월드컵 진출권 확보"],
 ["2026-11-17","amatch","카타르","1-0","W","도하 · 오세훈 결승골 · 모레노 임시 체제 마지막 경기"],
 ["2026-11-13","amatch","사우디아라비아","2-3","L","도하 · 오현규, 이재성 · 사우디전 21년 만의 패배"],
 ["2026-10-06","amatch","우즈베키스탄","2-0","W","용인미르스타디움"],
@@ -474,7 +474,14 @@ const MC={
  goals:[["박주호","5","김지우"],["김지우","15","안선현"],["김지우","20"],["김지우","53","이인우"],["안선현",""],["한승민",""]],opp:"뉴칼레도니아",
  stats:[["점유율","75%","25%"],["슈팅","31","4"]],
  note:"선발·교체: 대한축구협회 발표 기사 기준 · 수비 좌우 배치는 참고용 · 후반 시작 교체 3명은 누가 누구와 바뀌었는지 미확인 · 62분 안선현 PK 실축"},
-"2026-11-19|우간다":{t:"U-17 남자",coach:"김현준",goals:[["김지호","8","이인우"],["상대 자책골","50"],["김지우","84","안선현"]],opp:"우간다",stats:[["슈팅","15","15"],["유효슈팅","7","5"],["파울","18","9"]],note:"4-2-3-1 · 공격진 남이안, 2선 백건·이인우·김지호, 중원 한승민·정하원 (수비·골키퍼 확인 중)"},
+"2026-11-19|우간다":{t:"U-17 남자",coach:"김현준",f:"4-2-3-1",xi:["장준영","최재혁","최민준","강무성","성민수","정하원","한승민","백건","이인우","김지호","남이안"],
+ subs:[[38,"박경훈","정하원"],[51,"안선현","이인우"],[65,"임지성","백건"],[65,"김지우","남이안"],[89,"박주호","김지호"]],
+ cards:[["성민수","Y","45+1"]],
+ goals:[["김지호","8","이인우"],["상대 자책골","50"],["김지우","84","안선현"]],opp:"우간다",oppCoach:"",
+ stats:[["슈팅","15","15"],["유효슈팅","7","5"],["파울","18","9"]],
+ note:"선발: 국내 보도(4-2-3-1)와 FotMob 기록 기준 · 수비 좌우 배치는 참고용 · 안선현 교체 시간은 기록처에 따라 51분/65분"},
+"2026-05-17|우즈베키스탄":{t:"U-17 남자",coach:"김현준",goals:[["문지환","22"],["안선현","88"]],opp:"우즈베키스탄",oppGoals:"41분(골키퍼 실수) · 전반 추가시간",pk:"승부차기 3-5 (4번 키커 박경훈 실축)",
+ note:"AFC U-17 아시안컵 8강(월드컵 예선) · 선발 명단 확인 중"},
 "2026-11-13|사우디아라비아":{t:"남자 A",coach:"로베르트 모레노 (임시)",oppCoach:"요르요스 도니스",cards:[],cardsSrc:"ESPN 기록상 경고·퇴장 없음",f:"4-4-2",xi:["김승규","조현택","김민재","이한범","설영우","황희찬","박진섭","황인범","이강인","손흥민","오현규"],
  bench:["이명재","최준","이재성","김지수","오세훈","엄지성","박태준","손정범","송민규","이동경","정우영","김봉수","송범근","신민하","조현우"],
  subs:[[45,"이명재","조현택"],[66,"최준","설영우"],[66,"이재성","박진섭"],[66,"김지수","이한범"],[66,"오세훈","오현규"],[81,"엄지성","황희찬"]],
@@ -505,7 +512,7 @@ const sub=[...((m&&m.subs)||[]).map(([mn,i,ot])=>`${mn}' ${i} ↔ ${ot}`),...((m
 return `<div class="mc rec"><div class="rr">${r[3]||''} ${RLs[r[4]]||''}</div>
 ${m&&m.coach?`<div class="coach" style="text-align:center">감독 <b>${m.coach}</b>${m.oppCoach?` · ${m.opp} 감독 ${m.oppCoach}`:''}</div>`:''}<h6>한국 득점 (도움)</h6><div class="mn" style="margin:0">${gl.length?gl.map(g=>`${g[0]}${g[1]?' '+g[1]+"'":''}${g[2]?` <span style="opacity:.8">(도움 ${g[2]})</span>`:''}`).join(' · '):(r[5]||'확인 중')}${gl.some(g=>g[0]!=='상대 자책골'&&g[2]===undefined)?'<br><span style="opacity:.75">도움 표시가 없는 골은 도움 기록 확인 중</span>':''}</div>
 <h6>경고 · 퇴장</h6><div class="mn" style="margin:0">${m&&m.cards?(m.cards.length?m.cards.map(c=>`${c[1]==='R'?'🟥 퇴장':'🟨 경고'} ${c[0]}${c[2]?' '+c[2]+"'":''}`).join(' · '):(m.cardsSrc||'없음')):'확인 중'}</div>
-${m&&m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGoals}</div>`:''}
+${m&&m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGoals}</div>`:''}${m&&m.pk?`<h6>승부차기</h6><div class="mn" style="margin:0">${m.pk}</div>`:''}
 ${sub?`<h6>교체</h6><div class="mn" style="margin:0">${sub}</div>`:''}
 ${st?`<h6>경기 기록 (한국 · ${m.opp})</h6>${st}`:`<div class="mn">점유율·슈팅 등 세부 기록은 공식 기록이 확인되는 대로 추가합니다.</div>`}${m&&m.note&&!m.xi?`<div class="mn">${m.note}</div>`:''}
 ${X[k]&&X[k].tac?`<h6>경기 흐름</h6><div class="mn" style="margin:0;font-size:12px">${X[k].tac}</div>`:''}</div>`};
@@ -524,7 +531,7 @@ if(open){pn.innerHTML=MC[NEXT]&&MC[NEXT].xi?mcard(NEXT):`<div class="wait"><b>�
 
 window.renderLU=f=>{const g=document.getElementById('mcgrid'),hd=document.getElementById('luh');if(!g)return;
 const cc=f&&f.startsWith('c:')?f.slice(2):'',cm=cc?comps.find(c=>c.k===cc):null;
-let keys;if(cc){keys=res.filter(r=>r[1]===cc&&/\d/.test(r[3])).map(r=>r[0]+'|'+r[2]).sort().reverse()}else{keys=Object.keys(MC).filter(k=>MC[k].xi).sort().reverse()}
+let keys;if(cc){keys=res.filter(r=>r[1]===cc&&/[WDL]/.test(r[4])).map(r=>r[0]+'|'+r[2]).sort().reverse()}else{keys=Object.keys(MC).filter(k=>MC[k].xi).sort().reverse()}
 if(hd)hd.textContent=cm?cm.n+' · 지난 경기 라인업':'라인업 · 경기 기록';
 if(!keys.length){g.innerHTML=`<p class="empty">이 대회에서 치른 경기가 아직 없습니다.</p>`;return}
 g.innerHTML=keys.map(k=>{const [d,o]=k.split('|');const r=res.find(x=>x[0]===d&&x[2]===o);const sc=r?` <span>${r[3]} ${r[4]==='W'?'승':r[4]==='D'?'무':'패'}</span>`:'';const m=MC[k];
