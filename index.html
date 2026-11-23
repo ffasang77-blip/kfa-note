@@ -235,9 +235,14 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 .mct{font-size:13px;font-weight:700;margin:0 0 4px;color:var(--ink)}
 .mct span{color:#c42532}
 .newb{display:inline-block;background:#c42532;color:#fff;font-size:10px;padding:1px 5px;border-radius:4px;vertical-align:middle;margin-left:4px}
+.mvb{display:block;background:var(--blue);color:#fff;text-align:center;padding:12px 16px;font-weight:700;font-size:15px;line-height:1.5;text-decoration:none}
+.mvb[hidden]{display:none}
+.mvb b{display:inline-block;margin-left:6px;background:#fff;color:var(--blue);border-radius:16px;padding:1px 12px}
 </style>
+<link rel="canonical" href="https://kfa-note.blogspot.com/">
 </head>
 <body>
+<a class="mvb" id="mvb" href="https://kfa-note.blogspot.com/" hidden>📢 태극전사 경기 노트가 구글 블로그로 옮겼습니다 · 경기 글·라인업·자유게시판을 한곳에서 <b>블로그로 가기 →</b></a>
 
 <header class="mast band">
 <svg class="stripes" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true"><g stroke="#fff" stroke-width="10"><line x1="300" y1="0" x2="200" y2="200"/><line x1="330" y1="0" x2="230" y2="200"/><line x1="360" y1="0" x2="260" y2="200"/></g><circle cx="80" cy="170" r="70" fill="none" stroke="#fff" stroke-width="3"/></svg>
@@ -343,7 +348,6 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <div class="hls">
 <a href="https://kfa-note.blogspot.com/p/blog-page_23.html">💬 자유게시판 (구글 블로그)</a>
 <a href="https://kfa-note.blogspot.com/">경기 미리보기·결과 글 (구글 블로그)</a>
-<a data-nb="guest" href="#" hidden>자유게시판 (네이버 블로그)</a>
 <a data-nb="home" href="#" hidden>경기별 응원 댓글 (네이버 블로그)</a>
 <a href="https://myinffasang.tistory.com">경기 안내·관전평 (티스토리)</a>
 </div>
@@ -600,6 +604,7 @@ document.getElementById('src').innerHTML=src.map(s=>`<li><a href="${s[1]}">${s[0
 const nb=SITE.naverBlog;
 document.querySelectorAll('[data-nb]').forEach(el=>{if(nb){el.href=nb;el.hidden=false}else{el.hidden=true}});
 document.getElementById('nbnone').hidden=!!nb;
+if(/github\.io$/.test(location.hostname)){const mv=document.getElementById('mvb');if(mv)mv.hidden=false}
 }
 </script>
 </body>
