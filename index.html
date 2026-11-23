@@ -206,6 +206,14 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 .ms b:first-child{text-align:right}.ms div{position:relative;height:8px;border-radius:4px;background:rgba(255,255,255,.3);overflow:hidden}.ms div i{position:absolute;left:0;top:0;bottom:0;background:#fff}
 .ms em{grid-column:1/-1;font-style:normal;text-align:center;font-size:11px;opacity:.85;margin-bottom:-3px}
 .mc .mn{font-size:11px;opacity:.85;margin-top:8px}
+.mcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;align-items:start}
+.mcg .mc{margin:0;max-width:none}
+.mcw{scroll-margin-top:16px;border-radius:12px}.mcw:target{outline:3px solid #f2b705;outline-offset:4px}
+.lub{grid-column:1/-1;justify-self:start;display:inline-block;margin-top:4px;background:#c42532;color:#fff;font-size:13px;font-weight:700;padding:5px 12px;border-radius:16px;text-decoration:none}
+.lub:hover{background:#a51d2a}
+.mct{font-size:13px;font-weight:700;margin:0 0 4px;color:var(--ink)}
+.mct span{color:#c42532}
+.nw{display:inline-block;background:#c42532;color:#fff;font-size:10px;padding:1px 5px;border-radius:4px;vertical-align:middle;margin-left:4px}
 </style>
 </head>
 <body>
@@ -239,6 +247,7 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <div class="shell">
 <nav class="side" id="side" aria-label="메뉴">
 <span class="lbl">경기 노트</span>
+<a href="#lineups">라인업·경기 기록 <b class="nw">NEW</b></a>
 <a href="#comps">대회별 일정·결과</a>
 <a href="#teams">연령별 대표팀</a>
 <a href="#years">연도별 기록</a>
@@ -251,6 +260,11 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <div class="content">
 
 <main id="home">
+<section class="band" id="lineups"><div class="wrap">
+<h2>라인업 · 경기 기록 <b class="nw">NEW</b></h2>
+<p>경기별 선발 라인업과 후보 명단, 교체 시간, 득점, 경기 기록을 경기장 그림으로 정리했습니다. 공식 기록으로 확인된 경기부터 차례로 추가합니다. 흐린 선수는 교체로 나간 선수이고, 초록 글씨가 교체로 들어온 선수입니다.</p>
+<div class="mcg" id="mcgrid"></div>
+</div></section>
 <section class="band" id="comps"><div class="wrap">
 <h2>대회별 일정·결과·하이라이트</h2>
 <p>대회마다 다가올 경기와 상대팀 기록, 지난 경기 결과, FIFA 공식 하이라이트를 한 장에 모았습니다. 스코어는 한국 득점이 앞이며, 다가올 경기는 한국시간과 현지 시간을 함께 적었습니다. 지난 경기마다 '경기 상세'를 펼치면 포메이션·선발·전술과 상대팀 기록을 볼 수 있습니다. 경기 응원과 자유로운 이야기는 커뮤니티 메뉴에서 네이버 블로그로 이어집니다.</p>
@@ -455,7 +469,8 @@ return `<div class="mc"><div class="mh"><b>한국 선발 라인업</b><span clas
 ${m.oppGoals?`<h6>${m.opp} 득점</h6><div class="mn" style="margin:0">${m.oppGoals}</div>`:''}
 ${st?`<h6>경기 기록 (한국 · ${m.opp})</h6>${st}`:''}<div class="mn">▼ 교체 아웃 · ▲ 교체 투입 · ⚽ 득점${m.note?' · '+m.note:''}</div></div>`};
 const det=r=>{const k=r[0]+'|'+r[2],x=X[k]||{},mcH=mcard(k);if(!X[k]&&!mcH)return '';const row=(l,v)=>v?`<div><dt>${l}</dt><dd>${v}</dd></div>`:'';
-return `<details class="dx"><summary>경기 상세 · 라인업 · 상대팀 기록</summary>${mcH}<dl>${mcH?'':row('한국 포메이션',x.f)+row('한국 선발',x.xi)}${row('상대 포메이션',x.of)}${row('경기 흐름·전술',x.tac)}${row('상대팀 기록',x.o)}</dl></details>`};
+return `${mcH?`<a class="lub" href="#lu-${r[0]}">⚽ 라인업 보기</a>`:''}<details class="dx"><summary>경기 상세 · 라인업 · 상대팀 기록</summary>${mcH}<dl>${mcH?'':row('한국 포메이션',x.f)+row('한국 선발',x.xi)}${row('상대 포메이션',x.of)}${row('경기 흐름·전술',x.tac)}${row('상대팀 기록',x.o)}</dl></details>`};
+{const g=document.getElementById('mcgrid');if(g){const keys=Object.keys(MC).sort().reverse();g.innerHTML=keys.map(k=>{const [d,o]=k.split('|');const r=(typeof res!=='undefined'?res:[]).find(x=>x[0]===d&&x[2]===o);const sc=r?` <span>${r[3]} ${r[4]==='W'?'승':r[4]==='D'?'무':'패'}</span>`:'';return `<div id="lu-${d}" class="mcw"><p class="mct">${d.replace(/-/g,'.')} · 대한민국 vs ${o}${sc}</p>${mcard(k)}</div>`}).join('')}}
 let csel='전체';
 const groups={'전체':()=>true,'진행·예정':c=>c.s!=='done','종료':c=>c.s==='done'};
 function drawC(){
