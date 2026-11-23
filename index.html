@@ -515,11 +515,18 @@ bg.addEventListener('click',e=>{if(e.target===bg||e.target.classList.contains('m
 document.body.appendChild(bg);bg.querySelector('.mvx').focus()};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-mv]');if(b){e.preventDefault();show(b.dataset.mv,b.dataset.k)}})}
 
-{const NEXT='2026-11-25|에콰도르',NT='U-17 남자',b=document.getElementById('tlu'),pn=document.getElementById('tlp');
+{const NEXT='2026-11-25|에콰도르',NC='u17wc',b=document.getElementById('tlu'),pn=document.getElementById('tlp');
 if(b&&pn){b.addEventListener('click',()=>{const open=pn.hidden;pn.hidden=!open;b.setAttribute('aria-expanded',open);
-if(open){pn.innerHTML=MC[NEXT]&&MC[NEXT].xi?mcard(NEXT):`<div class="wait"><b>선발 라인업은 경기 약 1시간 전에 발표됩니다.</b><br>발표되면 이 칸에 선발 11명과 후보 명단을 경기장 그림으로 올리고, 경기 중·후에는 교체와 득점, 경기 기록을 이어서 반영합니다.<br><a href="#lineups:${encodeURIComponent(NT)}">${NT} 지난 경기 라인업 보기 →</a></div>`}})}}
+if(open){pn.innerHTML=MC[NEXT]&&MC[NEXT].xi?mcard(NEXT):`<div class="wait"><b>선발 라인업은 경기 약 1시간 전에 발표됩니다.</b><br>발표되면 이 칸에 선발 11명과 후보 명단을 경기장 그림으로 올리고, 경기 중·후에는 교체와 득점, 경기 기록을 이어서 반영합니다.<br><a href="#lineups:c:${NC}">이번 대회(U-17 월드컵) 지난 경기 라인업 보기 →</a></div>`}})}}
 
-window.renderLU=team=>{const g=document.getElementById('mcgrid'),hd=document.getElementById('luh');if(!g)return;const keys=Object.keys(MC).filter(k=>MC[k].xi&&(!team||MC[k].t===team)).sort().reverse();if(hd)hd.textContent=team?team+' 대표팀 라인업 · 경기 기록':'라인업 · 경기 기록';if(!keys.length){g.innerHTML=`<p class="empty">${team} 대표팀의 지난 경기 라인업은 아직 공식 기록으로 확인되지 않았습니다. 확인되는 대로 경기장 그림으로 추가합니다.</p>`;return}g.innerHTML=keys.map(k=>{const [d,o]=k.split('|');const r=(typeof res!=='undefined'?res:[]).find(x=>x[0]===d&&x[2]===o);const sc=r?` <span>${r[3]} ${r[4]==='W'?'승':r[4]==='D'?'무':'패'}</span>`:'';return `<div id="lu-${d}" class="mcw"><p class="mct">${d.replace(/-/g,'.')} · 대한민국 vs ${o}${sc}</p>${mcard(k)}</div>`}).join('')};renderLU('');
+window.renderLU=f=>{const g=document.getElementById('mcgrid'),hd=document.getElementById('luh');if(!g)return;
+const cc=f&&f.startsWith('c:')?f.slice(2):'',cm=cc?comps.find(c=>c.k===cc):null;
+let keys;if(cc){keys=res.filter(r=>r[1]===cc&&/\d/.test(r[3])).map(r=>r[0]+'|'+r[2]).sort().reverse()}else{keys=Object.keys(MC).filter(k=>MC[k].xi).sort().reverse()}
+if(hd)hd.textContent=cm?cm.n+' · 지난 경기 라인업':'라인업 · 경기 기록';
+if(!keys.length){g.innerHTML=`<p class="empty">이 대회에서 치른 경기가 아직 없습니다.</p>`;return}
+g.innerHTML=keys.map(k=>{const [d,o]=k.split('|');const r=res.find(x=>x[0]===d&&x[2]===o);const sc=r?` <span>${r[3]} ${r[4]==='W'?'승':r[4]==='D'?'무':'패'}</span>`:'';const m=MC[k];
+const body=m&&m.xi?mcard(k):`<div class="mc"><div class="mh"><b>한국 선발 라인업</b></div><div class="mn" style="font-size:13px">선발 전원(수비·골키퍼)이 아직 공식 기록으로 확인되지 않아 경기장 그림은 준비 중입니다.${m&&m.note?'<br>확인된 내용: '+m.note:''}${m&&m.goals?'<br>득점: '+m.goals.map(g=>g[0]+(g[1]?' '+g[1]+"'":'')).join(' · '):''}</div></div>`;
+return `<div id="lu-${d}" class="mcw"><p class="mct">${d.replace(/-/g,'.')} · 대한민국 vs ${o}${sc}${r?` · ${r[5].split(' · ')[0]}`:''}</p>${body}</div>`}).join('')};renderLU('');
 let csel='전체';
 const groups={'전체':()=>true,'진행·예정':c=>c.s!=='done','종료':c=>c.s==='done'};
 function drawC(){
