@@ -21,28 +21,29 @@
       radial-gradient(900px 600px at 110% 20%, rgba(80,120,255,.16), transparent 60%),
       radial-gradient(700px 500px at 50% 120%, rgba(255,80,120,.10), transparent 60%),
       var(--bg);
-    padding:28px 18px 60px;
+    padding:16px 14px 40px;
   }
-  .wrap{max-width:1120px;margin:0 auto}
-  header{text-align:center;margin-bottom:26px}
+  .wrap{max-width:1200px;margin:0 auto}
+  header{text-align:center;margin-bottom:16px}
   .eyebrow{display:inline-block;font-size:12px;letter-spacing:.32em;color:var(--gold);
-    border:1px solid rgba(255,207,74,.35);border-radius:99px;padding:5px 14px;margin-bottom:12px;background:rgba(255,207,74,.06)}
-  h1{font-family:'Black Han Sans',sans-serif;font-weight:400;font-size:clamp(38px,6vw,62px);line-height:1.05;
+    border:1px solid rgba(255,207,74,.35);border-radius:99px;padding:4px 12px;margin-bottom:6px;background:rgba(255,207,74,.06)}
+  h1{font-family:'Black Han Sans',sans-serif;font-weight:400;font-size:clamp(30px,4.5vw,46px);line-height:1.05;
     background:linear-gradient(180deg,#fff6d5 0%,var(--gold) 45%,var(--gold2) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
     filter:drop-shadow(0 6px 24px rgba(255,170,30,.25))}
-  header p{color:var(--muted);margin-top:8px;font-size:15px}
+  header p{color:var(--muted);margin-top:4px;font-size:13px}
 
-  .grid{display:grid;grid-template-columns:400px 1fr;gap:22px;align-items:start}
+  .grid{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:18px;align-items:start}
+  @media (min-width:901px){.grid > .machine{position:sticky;top:14px}}
   @media (max-width:900px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px;
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px;
     backdrop-filter:blur(12px);box-shadow:0 20px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05)}
-  .card h2{font-size:15px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+  .card h2{font-size:15px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:8px;margin-bottom:10px}
   .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
   .card h2 .sub{margin-left:auto;font-size:12px;color:var(--muted);font-weight:400}
 
   /* machine */
   .machine{display:flex;flex-direction:column;align-items:center}
-  .canvas-box{position:relative;width:100%;max-width:356px;aspect-ratio:1/1.25;border-radius:16px;overflow:hidden;
+  .canvas-box{position:relative;width:min(100%, calc((100vh - 385px) * 0.8));width:min(100%, calc((100svh - 385px) * 0.8));min-width:200px;max-width:356px;aspect-ratio:1/1.25;border-radius:16px;overflow:hidden;
     box-shadow:0 18px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.07)}
   .live{position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:900;letter-spacing:.14em;
     color:#fff;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.16);padding:4px 9px;border-radius:6px}
@@ -55,17 +56,17 @@
   .caption b{color:var(--gold)} .caption .cball{margin-left:auto}
   .caption .ball{width:32px;height:32px;font-size:12px}
   canvas{width:100%;height:100%;display:block}
-  .status{margin-top:6px;font-size:13px;color:var(--muted);height:20px;text-align:center}
+  .status{margin-top:4px;font-size:12px;color:var(--muted);height:20px;text-align:center}
   .status b{color:var(--gold)}
 
-  .controls{width:100%;margin-top:16px;display:flex;flex-direction:column;gap:12px}
+  .controls{width:100%;margin-top:8px;display:flex;flex-direction:column;gap:8px}
   .row{display:flex;align-items:center;gap:10px}
   .label{font-size:13px;color:var(--muted);min-width:56px}
   .seg{display:flex;flex:1;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:3px}
-  .seg button{flex:1;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:700;font-size:14px;padding:8px 0;border-radius:9px;cursor:pointer;transition:.2s}
+  .seg button{flex:1;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:700;font-size:14px;padding:6px 0;border-radius:9px;cursor:pointer;transition:.2s}
   .seg button.on{background:linear-gradient(180deg,#ffe07a,var(--gold2));color:#2a1a00;box-shadow:0 4px 14px rgba(255,160,30,.35)}
-  .btn-main{width:100%;border:0;cursor:pointer;font-family:'Black Han Sans',sans-serif;font-size:22px;letter-spacing:.06em;
-    padding:16px;border-radius:16px;color:#2a1a00;
+  .btn-main{width:100%;border:0;cursor:pointer;font-family:'Black Han Sans',sans-serif;font-size:19px;letter-spacing:.06em;
+    padding:11px;border-radius:14px;color:#2a1a00;
     background:linear-gradient(180deg,#fff0a8 0%,var(--gold) 40%,var(--gold2) 100%);
     box-shadow:0 10px 30px rgba(255,160,30,.35), inset 0 -3px 0 rgba(0,0,0,.15), inset 0 2px 0 rgba(255,255,255,.6);
     transition:transform .12s, filter .2s}
@@ -78,7 +79,7 @@
 
   /* balls */
   .ball{--c1:#ffd84d;--c2:#e6a800;--fg:#3a2600;
-    width:48px;height:48px;border-radius:50%;display:grid;place-items:center;flex:none;
+    width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;
     font-weight:900;font-size:16px;color:#161616;letter-spacing:-.04em;
     background:
       radial-gradient(circle at 30% 25%, rgba(255,255,255,.95) 0 4%, rgba(255,255,255,0) 17%),
@@ -92,8 +93,8 @@
   .ball.fixed-mark{outline:2px solid #fff;outline-offset:2px}
 
   /* results */
-  .games{display:flex;flex-direction:column;gap:12px}
-  .game{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;
+  .games{display:flex;flex-direction:column;gap:8px}
+  .game{display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:16px;
     background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line);
     animation:fadeIn .4s ease}
   @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -115,7 +116,7 @@
   .btn-sub:hover{background:rgba(255,255,255,.09)}
 
   /* picker */
-  .stack{display:flex;flex-direction:column;gap:22px}
+  .stack{display:flex;flex-direction:column;gap:18px;min-width:0}
   .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-bottom:12px;flex-wrap:wrap}
   .legend span{display:flex;align-items:center;gap:6px}
   .lg{width:12px;height:12px;border-radius:50%}
@@ -137,7 +138,7 @@
   .hist-item time{min-width:70px}
   .hist-group{display:flex;flex-direction:column;gap:5px}
 
-  .archive{margin-top:22px}
+  .archive{margin-top:0}
   .tabs{display:flex;gap:6px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:18px;flex-wrap:wrap}
   .tabs button{flex:1;min-width:120px;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:700;font-size:13px;padding:10px 8px;border-radius:10px;cursor:pointer;transition:.2s}
   .tabs button.on{background:rgba(255,207,74,.14);color:var(--gold);box-shadow:inset 0 0 0 1px rgba(255,207,74,.3)}
@@ -154,7 +155,7 @@
   .round-hero{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding:20px;border-radius:18px;
     background:linear-gradient(135deg,rgba(255,207,74,.13),rgba(80,120,255,.08));border:1px solid rgba(255,207,74,.25)}
   .eyebrow2{font-size:12px;color:var(--gold);font-weight:700;letter-spacing:.04em}
-  .round-no{font-family:'Black Han Sans',sans-serif;font-size:38px;line-height:1.15;color:#fff}
+  .round-no{font-family:'Black Han Sans',sans-serif;font-size:32px;line-height:1.15;color:#fff}
   .countdown{display:flex;gap:8px}
   .cd{min-width:58px;text-align:center;background:rgba(0,0,0,.4);border:1px solid var(--line);border-radius:12px;padding:8px 6px}
   .cd b{display:block;font-size:24px;font-variant-numeric:tabular-nums;color:var(--gold)} .cd span{font-size:11px;color:var(--muted)}
@@ -163,8 +164,8 @@
   .kpi span{font-size:12px;color:var(--muted)} .kpi b{display:block;font-size:24px;margin-top:2px} .kpi small{font-size:12px;color:var(--muted);font-weight:400}
   .sec-title{font-size:14px;font-weight:700;margin:20px 0 10px}
   .topb{display:flex;flex-direction:column;align-items:center;gap:4px} .topb small{font-size:11px;color:var(--muted)}
-  .freq{display:grid;grid-template-columns:repeat(15,1fr);gap:4px}
-  @media (max-width:640px){.freq{grid-template-columns:repeat(9,1fr)}}
+  .freq{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:4px}
+  
   .fc{border-radius:8px;text-align:center;padding:5px 0;font-size:12px;font-weight:700;background:rgba(255,190,40,var(--a));border:1px solid var(--line)}
   .fc small{display:block;color:rgba(255,255,255,.6);font-size:10px;font-weight:400}
   .entry{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.2);margin-bottom:8px;align-items:start}
@@ -207,7 +208,7 @@
 <body>
 <div class="wrap">
   <header>
-    <a href="https://kfa-note.blogspot.com/" style="display:inline-block;margin-bottom:14px;color:#8b93ad;font-size:13px;text-decoration:none">← 태극전사 경기 노트로 돌아가기</a><br>
+    <a href="https://kfa-note.blogspot.com/" target="_top" style="display:inline-block;margin-bottom:8px;color:#8b93ad;font-size:13px;text-decoration:none">← 태극전사 경기 노트로 돌아가기</a><br>
     <div class="eyebrow">LUCKY DRAW</div>
     <h1>로또 6/45</h1>
     <p>추첨기를 돌려 행운의 번호를 뽑아보세요</p>
@@ -247,30 +248,17 @@
           <button class="btn-sub" id="clearBtn">↺ 결과 지우기</button>
         </div>
       </section>
-
-      <section class="card">
-        <h2><span class="dot"></span>번호 고정 · 제외<span class="sub" id="pickInfo">고정 0 · 제외 0</span></h2>
-        <div class="legend">
-          <span><i class="lg" style="background:#fff"></i>한 번 클릭: 고정 (최대 5개)</span>
-          <span><i class="lg" style="background:#ff6b6b;opacity:.6"></i>두 번 클릭: 제외</span>
-          <span><i class="lg" style="background:rgba(255,255,255,.15)"></i>세 번 클릭: 해제</span>
+      <section class="card archive">
+        <h2><span class="dot"></span>기록 보관소<span class="sub"><span class="badge" id="storeBadge">연결 중…</span></span></h2>
+        <div class="tabs" id="arcTabs">
+          <button data-tab="now" class="on">📢 이번 회차 · 사전 공지</button>
+          <button data-tab="rounds">🗂 회차별 기록</button>
+          <button data-tab="wins">🏆 당첨 내역 (1~5등)</button>
         </div>
-        <div class="picker" id="picker"></div>
-        <div class="actions"><button class="btn-sub" id="resetPick">선택 초기화</button></div>
-        <p class="hint">고정한 번호는 모든 게임에 반드시 들어가고, 제외한 번호는 추첨기에서 빠집니다.</p>
+        <div id="arcBody"></div>
       </section>
-
     </div>
   </div>
-  <section class="card archive">
-    <h2><span class="dot"></span>기록 보관소<span class="sub"><span class="badge" id="storeBadge">연결 중…</span></span></h2>
-    <div class="tabs" id="arcTabs">
-      <button data-tab="now" class="on">📢 이번 회차 · 사전 공지</button>
-      <button data-tab="rounds">🗂 회차별 기록</button>
-      <button data-tab="wins">🏆 당첨 내역 (1~5등)</button>
-    </div>
-    <div id="arcBody"></div>
-  </section>
   <footer>번호는 브라우저의 암호학적 난수(crypto.getRandomValues)로 공정하게 뽑습니다.<br>재미로 즐겨주세요 · 과도한 구매는 삼가세요</footer>
 </div>
 <div class="toast" id="toast"></div>
@@ -922,7 +910,7 @@
   });
 
   // ---------- 번호 선택판 ----------
-  function renderPicker(){
+  function renderPicker(){ return;
     const p = $('#picker'); p.innerHTML='';
     for (let n=1;n<=45;n++){
       const b = document.createElement('button'); b.className='pick'; b.textContent=n;
@@ -959,12 +947,12 @@
   $('#clearBtn').onclick = () => { if (busy) return; lastResult=[]; $('#resultTime').textContent='';
     $('#games').innerHTML='<div class="empty-state"><div class="big">🎱</div>아직 추첨한 번호가 없어요.<br>왼쪽의 <b style="color:var(--gold)">추첨 시작</b>을 눌러보세요.</div>';
     $('#status').textContent='버튼을 눌러 추첨을 시작하세요'; };
-  $('#resetPick').onclick = () => { if (busy) return; for (const k in state) delete state[k]; store.set('lotto-pick', state); renderPicker(); fillMachine(); };
+  if ($('#resetPick')) $('#resetPick').onclick = () => { if (busy) return; for (const k in state) delete state[k]; store.set('lotto-pick', state); renderPicker(); fillMachine(); };
   $('#fastChk').checked = store.get('lotto-fast', false);
   $('#fastChk').onchange = e => store.set('lotto-fast', e.target.checked);
 
   // ---------- 시작 ----------
-  Object.assign(state, store.get('lotto-pick', {}));
+  store.set('lotto-pick', {});
   resize(); fillMachine(); renderPicker();
   Arc.loadLocal(); renderArchive(); Arc.connect();
   window.addEventListener('resize', resize);
