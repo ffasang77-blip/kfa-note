@@ -119,6 +119,14 @@ nav.toc a:hover,nav.toc a:focus-visible{background:var(--card);outline:2px solid
 .colm .by{font-size:13px;color:var(--mute);margin-bottom:18px}
 .colm p{font-size:17px;line-height:1.85;max-width:none;margin-bottom:16px}
 .colm .note{margin-top:14px}
+.agebar{display:flex;align-items:center;justify-content:space-between;gap:8px 14px;flex-wrap:wrap;margin:0 0 14px;padding:12px 16px;border-radius:12px;background:color-mix(in srgb,var(--blue) 10%,var(--bg));border:1px solid var(--line);font-size:15px}
+.agebar b{color:var(--blue)}
+.agebar a{font-weight:700;font-size:14px}
+.side a.ag{font-weight:500;font-size:14px;min-height:38px}
+.agechips{display:none;gap:6px;overflow-x:auto;margin:0 0 12px;padding-bottom:2px}
+.agechips a{flex:none;min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:99px;border:1px solid var(--line);text-decoration:none;color:var(--ink);font-weight:700;font-size:14px;background:var(--bg)}
+.agechips a.on{background:var(--blue);border-color:var(--blue);color:#fff}
+@media(max-width:900px){.agechips{display:flex}.side a.ag,.side .lbl,.side .sep{display:none}}
 .W{color:var(--blue)}
 .L{color:var(--red)}
 .D{color:var(--mute)}
@@ -308,6 +316,15 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <a href="https://kfa-note.blogspot.com/p/blog-page_23.html">자유게시판</a>
 <a href="#sources">출처</a>
 <span class="sep" aria-hidden="true"></span>
+<span class="lbl">연령별 보기</span>
+<a href="#age-all" class="ag">전체</a>
+<a href="#age-a" class="ag">국가대표</a>
+<a href="#age-u23" class="ag">U-23</a>
+<a href="#age-u20" class="ag">U-20</a>
+<a href="#age-u17" class="ag">U-17</a>
+<a href="#age-wa" class="ag">여자 국가대표</a>
+<a href="#age-wu20" class="ag">여자 U-20</a>
+<span class="sep" aria-hidden="true"></span>
 <span class="lbl">함께 보기</span>
 <a href="#free-board" class="fb">커뮤니티</a>
 <button class="mini" id="mb-pk" type="button" aria-expanded="false" aria-controls="mp-pk">⚽ 승부차기 게임 <span class="ar">▶</span></button>
@@ -322,6 +339,8 @@ input:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue
 <section class="band" id="comps"><div class="wrap">
 <h2>대회별 일정·결과·하이라이트</h2>
 <p>대회마다 다가올 경기와 상대팀 기록, 지난 경기 결과, FIFA 공식 하이라이트를 한 장에 모았습니다. 스코어는 한국 득점이 앞이며, 다가올 경기는 한국시간과 현지 시간을 함께 적었습니다. 지난 경기마다 '경기 상세'를 펼치면 포메이션·선발·전술과 상대팀 기록을 볼 수 있습니다. 경기 응원과 자유로운 이야기는 커뮤니티 메뉴에서 네이버 블로그로 이어집니다.</p>
+<nav class="agechips" aria-label="연령별 보기"><a href="#age-all">전체</a><a href="#age-a">국가대표</a><a href="#age-u23">U-23</a><a href="#age-u20">U-20</a><a href="#age-u17">U-17</a><a href="#age-wa">여자 국가대표</a><a href="#age-wu20">여자 U-20</a></nav>
+<div class="agebar" id="agebar" hidden></div>
 <div class="chips" id="cchips" role="group" aria-label="대회 보기"></div>
 <div id="clist"></div>
 </div></section>
@@ -599,12 +618,20 @@ g.innerHTML=keys.map(k=>{const [d,o]=k.split('|');const r=res.find(x=>x[0]===d&&
 const body=m&&m.xi?mcard(k):`<div class="mc"><div class="mh"><b>한국 선발 라인업</b></div>${m&&m.coach?`<div class="coach">감독 <b>${m.coach}</b></div>`:''}<div class="mn" style="font-size:13px">선발 전원(수비·골키퍼)이 아직 공식 기록으로 확인되지 않아 경기장 그림은 준비 중입니다.${m&&m.note?'<br>확인된 내용: '+m.note:''}${m&&m.goals?'<br>득점: '+m.goals.map(g=>g[0]+(g[1]?' '+g[1]+"'":'')).join(' · '):''}</div></div>`;
 return `<div id="lu-${d}" class="mcw"><p class="mct">${d.replace(/-/g,'.')} · 대한민국 vs ${o}${sc}${r?` · ${r[5].split(' · ')[0]}`:''}</p>${body}</div>`}).join('')};renderLU('');
 let csel='전체';
+const AG={all:'전체',a:'남자 A대표팀',u23:'U-23 · 아시안게임 대표팀',u20:'U-20 남자 대표팀',u17:'U-17 남자 대표팀',wa:'여자 A대표팀',wu20:'여자 U-20 대표팀'};
+const CG={u17wc:['u17'],wfr:['wa'],wwc27:['wa'],ac27:['a'],u20ac27:['u20'],oly28w:['wa'],amatch:['a'],wc26:['a'],ag26:['u23','wa'],u20wwc26:['wu20'],u23ac26:['u23'],y25:['u20','u17']};
+let age='all';
+const inAge=c=>age==='all'||(CG[c.k]||[]).includes(age);
+const rg=r=>{const g=CG[r[1]]||[];if(r[1]==='ag26')return /여자/.test(r[5])?'wa':'u23';if(r[1]==='y25')return /U-17/.test(r[5])?'u17':'u20';return g[0]};
 const groups={'전체':()=>true,'진행·예정':c=>c.s!=='done','종료':c=>c.s==='done'};
 function drawC(){
 document.getElementById('cchips').innerHTML=Object.keys(groups).map(g=>`<button type="button" data-g="${g}" aria-pressed="${g===csel}">${g}</button>`).join('');
-document.getElementById('clist').innerHTML=comps.filter(groups[csel]).map(c=>{
+const ab=document.getElementById('agebar');ab.hidden=age==='all';if(age!=='all')ab.innerHTML=`<span><b>${AG[age]}</b> 자료만 보는 중</span><a href="#age-all">전체 보기</a>`;
+const cl=comps.filter(groups[csel]).filter(inAge);
+document.getElementById('clist').innerHTML=cl.length?'':'<p class="empty">이 조건에 맞는 대회가 없습니다.</p>';
+if(cl.length)document.getElementById('clist').innerHTML=cl.map(c=>{
 const up=fx.filter(f=>f.c===c.k&&new Date(f.t)>now-36e5*3);
-const rs=res.filter(r=>r[1]===c.k);
+const rs=res.filter(r=>r[1]===c.k&&(age==='all'||rg(r)===age));
 const left=(up.length||c.opp.length)?`<div>${up.length?`<h4>다가올 경기</h4><ul class="up">${up.map(f=>`<li><div class="when"><b>${f.d}</b><span>${f.w}</span>${f.lt?`<span class="lt">${f.lt}</span>`:''}</div><div><h5>${f.h}</h5><p>${f.p}</p><span class="tvl">중계: ${f.tv}</span>${SITE.naverBlog?`<br><a class="cb" href="${SITE.naverBlog}">네이버 블로그에 응원 댓글 남기기</a>`:''}</div></li>`).join('')}</ul>`:''}${c.opp.length?`<h4>상대팀 기록</h4><div class="opp">${c.opp.map(o=>`<div><b>${o.n}</b><ul>${o.l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}</div>`:''}</div>`:'';
 const right=`<div><h4>지난 경기 결과</h4>${rs.length?`<ul class="rs">${rs.map(r=>`<li><span class="dt">${dlabel(r[0])}<span class="nt">${yr(r[0])}</span></span><span><span class="vsn">vs ${r[2]}</span><span class="nt">${r[5]}${r[6]?` · <a href="${r[6]}">▶ 하이라이트</a>`:''}</span></span><span class="sc2 ${r[4]}">${r[3]}${/\d/.test(r[3])?`<small>${RL[r[4]]}</small>`:''}</span>${det(r)}</li>`).join('')}</ul>`:'<p class="empty">아직 치른 경기가 없습니다.</p>'}${c.hl.length?`<h4>FIFA 공식 하이라이트</h4><div class="hls">${c.hl.map(h=>`<a href="${h[1]}">${play}${h[0]}</a>`).join('')}</div>`:''}</div>`;
 return `<article class="comp" id="c-${c.k}"><header><div class="row"><div><span class="tag ${c.tag.includes('여자')?'r':''}">${c.tag}</span><h3>${c.n}</h3><span class="per">${c.per}</span></div><span class="st ${c.s}">${c.st}</span></div><p>${c.sum}</p></header><div class="cbody ${left?'':'one'}">${left}${right}</div></article>`}).join('');
@@ -612,8 +639,8 @@ return `<article class="comp" id="c-${c.k}"><header><div class="row"><div><span 
 drawC();
 
 const homeEl=document.getElementById('home'),fbEl=document.getElementById('free-board'),luEl=document.getElementById('lineups'),colEl=document.getElementById('column');
-function route(){const hs=location.hash.slice(1);const cv=hs==='column',fb=hs==='free-board',lu=hs==='lineups'||hs.startsWith('lineups:')||hs.startsWith('lu-');if(lu&&window.renderLU)renderLU(hs.startsWith('lineups:')?decodeURIComponent(hs.slice(8)):'');homeEl.hidden=fb||lu||cv;fbEl.hidden=!fb;colEl.hidden=!cv;luEl.hidden=!lu;if(lu&&!hs.startsWith('lu-')){luEl.scrollIntoView({block:'start'});return}
-document.querySelectorAll('#side a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+hs));
+function route(){let hs=location.hash.slice(1);if(hs.startsWith('age-')){const g=hs.slice(4);age=AG[g]?g:'all';drawC();if(window.drawAge)drawAge();}const ah=hs.startsWith('age-');if(ah)hs='comps';const cv=hs==='column',fb=hs==='free-board',lu=hs==='lineups'||hs.startsWith('lineups:')||hs.startsWith('lu-');if(lu&&window.renderLU)renderLU(hs.startsWith('lineups:')?decodeURIComponent(hs.slice(8)):'');homeEl.hidden=fb||lu||cv;fbEl.hidden=!fb;colEl.hidden=!cv;luEl.hidden=!lu;if(lu&&!hs.startsWith('lu-')){luEl.scrollIntoView({block:'start'});return}
+document.querySelectorAll('#side a').forEach(a=>a.classList.toggle('on',a.classList.contains('ag')?a.getAttribute('href')==='#age-'+age:(!ah&&a.getAttribute('href')==='#'+hs)));document.querySelectorAll('.agechips a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#age-'+age));
 if(cv){colEl.scrollIntoView({block:'start'})}else if(fb){fbEl.scrollIntoView({block:'start'})}else if(hs){const t=document.getElementById(hs);if(t)t.scrollIntoView({block:'start'})}}
 window.addEventListener('hashchange',route);route();
 document.getElementById('cchips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;csel=b.dataset.g;drawC()});
@@ -630,7 +657,9 @@ const teams=[
 {n:"여자 A대표팀",c:"감독 신상우",h:["여자월드컵 <b>5회</b> 진출(2027 포함)","월드컵 최고 <b>16강</b>(2015)","아시안컵 준우승(2022)","아시안게임 동메달 <b>4회</b>"],r:[["아시안컵 조별 호주","3-3","D","A조 1위"],["아시안컵 8강 우즈베키스탄","6-0","W","월드컵 본선 확정"],["아시안컵 4강 일본","1-4","L","3월, 시드니"],["아시안게임 8강 우즈베키스탄","6-3","W","윤수정 해트트릭"],["아시안게임 4강 일본","0-2","L",""],["아시안게임 동메달전 중국","1-0","W","11년 만의 중국전 승리"]]},
 {n:"여자 U-20 대표팀",c:"감독 박윤정",h:["U-20 여자월드컵 <b>3위</b>(2010)","2026 대회 12년 만의 8강","2회 연속 16강"],r:[["2026 월드컵 조별 프랑스","1-1","D","폴란드"],["2026 월드컵 조별 가나","1-3","L",""],["2026 월드컵 조별 에콰도르","3-2","W","조 2위"],["2026 월드컵 16강 아르헨티나","1-0","W","범예주 결승골"],["2026 월드컵 8강 이탈리아","패","L","대회 마감"]]}
 ];
-document.getElementById('tm').innerHTML=teams.map(t=>`<article class="team"><header><h3>${t.n}</h3><span class="coach">${t.c}</span></header><div class="hon">${t.h.map(x=>`<span>${x}</span>`).join('')}</div><div class="scroll"><table><tbody>${t.r.map(x=>R(...x)).join('')}</tbody></table></div></article>`).join('');
+const TG={'남자 A대표팀':'a','U-23 · 아시안게임 대표팀':'u23','U-20 남자 대표팀':'u20','U-17 남자 대표팀':'u17','여자 A대표팀':'wa','여자 U-20 대표팀':'wu20'};
+function drawT(){document.getElementById('tm').innerHTML=teams.filter(t=>age==='all'||TG[t.n]===age).map(t=>`<article class="team"><header><h3>${t.n}</h3><span class="coach">${t.c}</span></header><div class="hon">${t.h.map(x=>`<span>${x}</span>`).join('')}</div><div class="scroll"><table><tbody>${t.r.map(x=>R(...x)).join('')}</tbody></table></div></article>`).join('');}
+drawT();
 
 const yrs=[
 ["2026",["남자 A: 북중미 월드컵 1승 2패로 조별리그 탈락, 홍명보 감독 사퇴 후 모레노 임시 체제 6경기 3승 1무 2패","U-23: 아시안컵 4위, 아이치·나고야 아시안게임 금메달(사상 첫 4연패)","여자 A: 아시안컵 4강, 2027 여자월드컵 진출, 아시안게임 동메달","여자 U-20: 월드컵 8강 · U-17: 아시안컵 8강, 월드컵 조별 2전 전승 중"]],
@@ -640,7 +669,10 @@ const yrs=[
 ["2022",["남자 A: 카타르 월드컵 16강(포르투갈 2-1)","여자 A: 아시안컵 준우승(역대 최고)"]],
 ["2019",["남자 U-20: 폴란드 월드컵 준우승, 이강인 골든볼","U-17: 브라질 월드컵 8강"]]
 ];
-document.getElementById('yrs').innerHTML=yrs.map(y=>`<div class="yr"><b>${y[0]}</b><ul>${y[1].map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
+const YR={a:/^남자 A/,u23:/U-23/,u20:/(^|· |남자 )U-20:/,u17:/U-17/,wa:/여자 A/,wu20:/여자 U-20/};
+function drawY(){const f=x=>age==='all'||YR[age].test(x);document.getElementById('yrs').innerHTML=yrs.map(y=>[y[0],y[1].filter(f)]).filter(y=>y[1].length).map(y=>`<div class="yr"><b>${y[0]}</b><ul>${y[1].map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')||'<p class="empty">이 연령대의 연도별 기록은 아직 없습니다.</p>';const as=document.querySelector('#years aside');if(as)as.hidden=!(age==='all'||age==='a')}
+drawY();
+window.drawAge=()=>{drawT();drawY()};drawAge();
 
 const a26=[["3.28","코트디부아르","친선","0-4","L"],["4.1","오스트리아","친선","0-1","L"],["6.12","체코","월드컵","2-1","W"],["6.19","멕시코","월드컵","0-1","L"],["6.25","남아공","월드컵","0-1","L"],["9.24","에콰도르","친선","3-0","W"],["9.28","우루과이","친선","1-4","L"],["10.2","베네수엘라","친선","0-0","D"],["10.6","우즈베키스탄","친선","2-0","W"],["11.13","사우디","친선","2-3","L"],["11.17","카타르","친선","1-0","W"]];
 document.getElementById('a26').innerHTML=a26.map(x=>`<tr><td class="nw">${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td class="sc ${x[4]}">${x[3]}</td></tr>`).join('');
