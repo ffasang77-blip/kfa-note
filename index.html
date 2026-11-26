@@ -828,5 +828,38 @@ if(bg)bg.addEventListener('click',closeAll);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll()});
 })();
 </script>
+<script>
+(function(){
+var U='https://script.google.com/macros/s/AKfycbx-FRR60vE7u7Py6AXTQswFk-3at-w0uDnGk27a14xTox3_BULp0edtKLf3cJSjKVgX/exec';
+var SHEET='https://docs.google.com/spreadsheets/d/1EkcJIN204RdB0ttBU_67M68BjfC-pHJITS4l6N0LtCg/edit';
+var host=location.hostname,site=/blogspot\./.test(host)?'blog':(/github\.io$/.test(host)?'home':'');
+if(!site||window.__kfaVisit)return;window.__kfaVisit=1;
+var ls=null;try{ls=window.localStorage;ls.getItem('x')}catch(e){ls=null}
+var q=new URLSearchParams(location.search);
+try{if(q.get('me')==='kfa')ls.setItem('kfaOwner','1');if(q.get('me')==='off')ls.removeItem('kfaOwner')}catch(e){}
+var owner=!!(ls&&ls.getItem('kfaOwner')==='1');
+var day=new Date(Date.now()+9*36e5).toISOString().slice(0,10);
+var url=U+'?a=get';
+if(!owner){
+ var k='kfaV_'+site;var seen=null;try{seen=ls&&ls.getItem(k)}catch(e){}
+ if(seen===day)return;
+ try{ls&&ls.setItem(k,day)}catch(e){}
+ var ref='';try{if(document.referrer){var r=new URL(document.referrer);if(r.hostname!==host)ref=r.hostname+r.pathname}}catch(e){}
+ var dev=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?'휴대폰':'PC';
+ url=U+'?a=hit&site='+site+'&page='+encodeURIComponent(location.pathname)+'&ref='+encodeURIComponent(ref)+'&dev='+encodeURIComponent(dev);
+ fetch(url,{mode:'cors'}).catch(function(){});return;
+}
+// 운영자 전용 방문 수 박스
+var box=document.createElement('div');
+box.setAttribute('style','position:fixed;left:12px;bottom:12px;z-index:2147483000;background:#0d2a6b;color:#fff;border-radius:12px;padding:10px 14px;font:13px/1.55 "Noto Sans KR",sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35);min-width:180px;max-width:240px');
+box.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;color:#facc15">👀 방문자 <span style="font-weight:400;color:#cbd5e1;font-size:11px">내 방문 제외</span><button type="button" aria-label="접기" style="border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:6px;width:22px;height:22px;cursor:pointer;font-size:12px;padding:0">–</button></div><div class="kv">불러오는 중…</div>';
+document.body.appendChild(box);
+var body=box.querySelector('.kv'),btn=box.querySelector('button');
+btn.onclick=function(){var h=body.style.display!=='none';body.style.display=h?'none':'';btn.textContent=h?'+':'–'};
+fetch(url,{mode:'cors'}).then(function(r){return r.json()}).then(function(c){
+ body.innerHTML='오늘 <b style="font-size:16px">'+c.today+'</b> <span style="color:#cbd5e1">(홈 '+c.todayHome+' · 블로그 '+c.todayBlog+')</span><br>어제 <b>'+c.yesterday+'</b> · 전체 <b>'+c.total+'</b><br><span style="color:#cbd5e1;font-size:11px">전체: 홈 '+c.totalHome+' · 블로그 '+c.totalBlog+'</span><br><a href="'+SHEET+'" target="_blank" rel="noopener" style="color:#facc15;font-size:12px">방문 기록 시트 열기 ↗</a>';
+}).catch(function(){body.textContent='불러오기 실패'});
+})();
+</script>
 </body>
 </html>
